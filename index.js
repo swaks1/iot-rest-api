@@ -1,12 +1,12 @@
-var express = require("express");
+// intro point for the server.
+// if only the folder is specified in require, index.js will be taken inside that folder by default
 
-var app = express();
-var port = process.env.port || 3000;
+// setup config first before anything by requiring it
+var config = require("./server/config");
+var app = require("./server");
+var logger = require("./server/util/logger");
 
-app.get("/", (req, res) => {
-    res.send("Welcome to my api");
+app.listen(config.port, () => {
+    logger.log(`Listening on http://localhost:${config.port}`);
 });
 
-app.listen(port, () => {
-    console.log("Running on " + port + "..")
-})
