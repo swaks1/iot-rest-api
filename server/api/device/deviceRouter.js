@@ -6,9 +6,12 @@ var controller = require('./deviceController');
 router.param('id', controller.params);
 
 router.route('/')
-    .get(controller.get);
+    .get(controller.get)
+    .post(controller.post);
 
 router.route('/:id')
-    .get(controller.getOne);
+    .get(controller.getById)
+    .put(controller.putById)
+    .delete(controller.deleteById);
 
 module.exports = router;
