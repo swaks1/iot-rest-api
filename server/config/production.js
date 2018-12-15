@@ -4,7 +4,7 @@
 var prodConfig = {
     logging: false,
     db: {
-        url: 'mongodb://localhost/iotApp-prod'
+        url: 'mongodb://localhost:27017/iotApp-prod'
     }
 };
 

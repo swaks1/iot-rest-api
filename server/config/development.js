@@ -4,7 +4,7 @@
 var devConfig = {
     logging: true,
     db: {
-        url: 'mongodb://localhost/iotApp'
+        url: 'mongodb://localhost:27017/iotApp'
     }
 };
 

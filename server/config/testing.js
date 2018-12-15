@@ -4,7 +4,7 @@
 var testConfig = {
     logging: true,
     db: {
-        url: 'mongodb://localhost/iotApp-test'
+        url: 'mongodb://localhost:27017/iotApp-test'
     }
 };
 
