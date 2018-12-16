@@ -11,7 +11,7 @@ router.route('/:id')
     .get(controller.getById);
     
 router.route('/notExecuted/:deviceId')
-    .get(controller.getNotExecutedCommands)
+    .get(controller.getNotExecutedCommand)
     .post(controller.postExecutedCommand);
 
 module.exports = router;

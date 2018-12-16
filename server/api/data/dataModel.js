@@ -7,7 +7,10 @@ var DataSchema = new Schema({
         ref: 'device',
         required: true
     },
-    value: [], //this can be any type
+    dataItem: {
+        dataValue: String,
+        dataType : String,
+    },
     created: {
         type: Date,
         default: Date.now

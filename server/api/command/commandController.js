@@ -39,7 +39,7 @@ controller.getById = (req, res, next) => {
     if (!commandId) {
         res.send("add device id");
     } else {
-        Command.find({ _id: commandId})
+        Command.findById({ _id: commandId})
             //.populate('device')
             .exec()
             .then(data => {
@@ -49,16 +49,17 @@ controller.getById = (req, res, next) => {
     }
 };
 
-controller.getNotExecutedCommands = (req, res, next) => {
+controller.getNotExecutedCommand = (req, res, next) => {
     var deviceId = req.params.deviceId;
     if (!deviceId) {
         res.send("add device id");
     } else {
         Command.find({ device: deviceId, executed: false })
             //.populate('device')
+            .sort({created: 'asc'})
             .exec()
             .then(data => {
-                res.json(data);
+                res.json(data[0]);
             },
                 err => next(err));
     }
@@ -67,10 +68,12 @@ controller.getNotExecutedCommands = (req, res, next) => {
 
 controller.postExecutedCommand = (req, res, next) => {
     var commandId = req.body.commandId;
+    var isExecuted = req.body.executed;
+    //logger.log(req.body);
     Command.findOne({ _id: commandId })
         .then(item => {
             if(item){
-                item.executed = true;
+                item.executed = isExecuted;
                 item.save();
                 res.send("OK..SAVED");
             }

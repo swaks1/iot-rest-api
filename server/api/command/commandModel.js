@@ -7,7 +7,10 @@ var CommandSchema = new Schema({
         ref: 'device',
         required: true
     },
-    value: [], //this can be any type
+    commandItem: {
+        commandValue: String,
+        commandType : String,
+    },
     created: {
         type: Date,
         default: Date.now
