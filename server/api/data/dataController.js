@@ -33,7 +33,9 @@ controller.get = (req, res, next) => {
 
 controller.post = (req, res, next) => {
     var newData = req.body;
-    newData.created = new Date(newData.created);
+    if(newData.create){
+        newData.created = new Date(newData.created);
+    }
 
     Data.create(newData)
         .then(item => {
@@ -41,7 +43,7 @@ controller.post = (req, res, next) => {
         }, err => next(err));
 };
 
-controller.getOne = (req, res, next) => {
+controller.getById = (req, res, next) => {
     var dataItem = req.dataItem;
     res.json(dataItem);
 };

@@ -1,9 +1,7 @@
 var router = require('express').Router();
-var controller = require('./dataController');
+var controller = require('./commandController');
 var _ = require('lodash');
 
-//every route that ends with :id will first enter here than continue
-router.param('id', controller.param);
 
 router.route('/')
     .get(controller.get)
@@ -11,5 +9,9 @@ router.route('/')
 
 router.route('/:id')
     .get(controller.getById);
+    
+router.route('/notExecuted/:deviceId')
+    .get(controller.getNotExecutedCommands)
+    .post(controller.postExecutedCommand);
 
 module.exports = router;
