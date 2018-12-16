@@ -1,5 +1,6 @@
 var router = require('express').Router();
-var controller = require('./deviceController');
+var controller = require('./dataController');
+var _ = require('lodash');
 
 //every route that ends with :id will first enter here than continue
 router.param('id', controller.param);
@@ -9,8 +10,6 @@ router.route('/')
     .post(controller.post);
 
 router.route('/:id')
-    .get(controller.getById)
-    .put(controller.putById)
-    .delete(controller.deleteById);
+    .get(controller.getOne);
 
 module.exports = router;

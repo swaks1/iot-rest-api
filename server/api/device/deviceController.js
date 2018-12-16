@@ -1,10 +1,11 @@
 var Device = require('./deviceModel');
+var logger = require('../../util/logger');
 var _ = require('lodash');
 
 var controller = {};
 
 //like middleware that will interecept routes with :id 
-controller.params = (req, res, next, id) => {
+controller.param = (req, res, next, id) => {
     Device.findById(id)
         .then((device) => {
             if (!device) {
@@ -36,7 +37,13 @@ controller.post = (req, res, next) => {
 
 controller.getById = (req, res, next) => {
     var device = req.device; //taken from controller.params method
-    res.json(device);
+    //res.json(device);
+    Device.findById(device.id)
+            .select('+password') //paswword is excluded in the Schema (select:false)
+            .exec()
+            .then(device => {
+                res.json(device);
+            }, err => next(err));    
 };
 
 controller.putById = (req, res, next) => {
