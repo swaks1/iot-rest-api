@@ -4,19 +4,28 @@
 #include <ArduinoJson.h>
 
 const char *ssid = "Poposki";
-const char *password = "10denari";
+const char *wifi_password = "10denari";
+
+const char *DEVICE_NAME = "forthDevice";
+const char *DEVICE_PASSWORD = "123456";
+
+bool IS_ACTIVE = true;
+bool IS_LOGGED_IN = false;
+String DEVICE_ID = "";
+
+String LOG_IN_ROUTE = "http://192.168.100.8:8000/api/devices/LogIn";
+String DATA_ROUTE = "http://192.168.100.8:8000/api/data";
+String CHECK_COMMAND_ROUTE = "http://192.168.100.8:8000/api/command/notExecuted/"; //DEVICE_ID to be added
 
 unsigned long commandCheckDelay = 10000; //10seconds
 unsigned long lastCommandCheckTime;
 bool shouldCheckCommand = false;
 
-bool IS_ACTIVE = true;
 unsigned long sendDataDelay = 5000;
 unsigned long lastSendDataTime;
 bool shouldSendData = false;
 
 unsigned long currentTime;
-
 String stringVariable;
 
 void setup()
@@ -24,17 +33,11 @@ void setup()
   Serial.begin(115200);
   delay(10);
 
-  Serial.printf("\nConnecting to %s \n", ssid);
+  ConnectToWIFI();
 
-  WiFi.begin(ssid, password);
+  LoginToServer();
 
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("\nWiFi connected !!");
+  InitRoutes();
 }
 
 void loop()
@@ -49,6 +52,94 @@ void loop()
   GetCommand();
 
   delay(100);
+}
+
+void ConnectToWIFI()
+{
+  Serial.printf("\nConnecting to %s \n", ssid);
+
+  WiFi.begin(ssid, wifi_password);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nWiFi connected !!");
+}
+
+void LoginToServer()
+{
+  while (IS_LOGGED_IN == false)
+  {
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      //Object of class HTTPClient
+      HTTPClient http;
+
+      Serial.print("\n\n\nTrying to login to the server...\nHTTP begin...\n");
+
+      if (http.begin(LOG_IN_ROUTE))
+      {
+
+        http.addHeader("Content-Type", "application/json"); //Specify content-type header
+
+        //CREATE PYALOAD
+        const size_t bufferSize = JSON_OBJECT_SIZE(2);
+        DynamicJsonBuffer jsonBuffer(bufferSize);
+
+        JsonObject &root = jsonBuffer.createObject();
+        root["name"] = DEVICE_NAME;
+        root["password"] = DEVICE_PASSWORD;
+
+        stringVariable = "";
+        root.printTo(stringVariable);
+        //END CREATE PYALOAD
+
+        Serial.printf("HTTP POST login ... for %s \n", DEVICE_NAME);
+        // start connection and send HTTP header
+        int httpCode = http.POST(stringVariable);
+
+        if (httpCode > 0)
+        {
+          // HTTP header has been send and Server response header has been handled
+          Serial.printf("HTTP POST Code: %d\n", httpCode);
+
+          String payload = http.getString(); //.c_str() for print ?
+
+          const size_t bufferSize = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5) + 150;
+          DynamicJsonBuffer jsonBuffer(bufferSize);
+
+          JsonObject &root = jsonBuffer.parseObject(payload);
+
+          Serial.printf("Recieved response from login:  %s \n", payload.c_str());
+
+          if (root.success())
+          {
+            DEVICE_ID = root["_id"].as<String>(); // "5c1fa3aa0841ed4758e71df7"
+            IS_LOGGED_IN = true;
+          }
+          else
+          {
+            Serial.println("Error in deserializing JSON login response...");
+          }
+        }
+        else
+        {
+          Serial.printf("HTTP POST login FAILED ... Error: %s\n", http.errorToString(httpCode).c_str());
+        }
+
+        http.end();
+      }
+      else
+      {
+        Serial.printf("HTTP Unable to connect\n");
+      }
+    }
+
+    delay(5000);
+  }
 }
 
 void GetCommand()
@@ -68,7 +159,7 @@ void GetCommand()
 
     Serial.print("\n\n\nGetting commands from server...\nHTTP begin...\n");
 
-    if (http.begin("http://192.168.100.8:8000/api/command/notExecuted/5c155d5abea777461420387a"))
+    if (http.begin(CHECK_COMMAND_ROUTE))
     {
 
       http.addHeader("Content-Type", "application/json"); //Specify content-type header
@@ -175,7 +266,7 @@ void SendSensorValue(float value)
 
     Serial.print("Sending data to server...\nHTTP begin...\n");
 
-    if (http.begin("http://192.168.100.8:8000/api/data"))
+    if (http.begin(DATA_ROUTE))
     {
 
       http.addHeader("Content-Type", "application/json"); //Specify content-type header
@@ -186,7 +277,7 @@ void SendSensorValue(float value)
 
       JsonObject &root = jsonBuffer.createObject();
 
-      root["device"] = "5c155d5abea777461420387a";
+      root["device"] = DEVICE_ID;
 
       JsonObject &dataItem = root.createNestedObject("dataItem");
       dataItem["dataValue"] = value;
@@ -196,7 +287,7 @@ void SendSensorValue(float value)
       root.printTo(stringVariable);
       //END CREATE PYALOAD
 
-      Serial.printf("HTTP POST data ... for %s \n", "5c155d5abea777461420387a");
+      Serial.printf("HTTP POST data ... for %s \n", DEVICE_ID.c_str());
       // start connection and send HTTP header
       int httpCode = http.POST(stringVariable);
 
@@ -219,4 +310,9 @@ void SendSensorValue(float value)
     //update last send time
     lastSendDataTime = millis();
   }
+}
+
+void InitRoutes(){
+  CHECK_COMMAND_ROUTE += DEVICE_ID;
+  //other routs to be initialized with DEVICE_ID ...
 }
