@@ -14,7 +14,8 @@ controller.param = (req, res, next, id) => {
                 req.device = device;
                 next();
             }
-        }, (err) => next(err));
+        },
+            (err) => next(err));
 
 };
 
@@ -22,7 +23,8 @@ controller.get = (req, res, next) => {
     Device.find({})
         .then(devices => {
             res.json(devices);
-        }, err => next(err));
+        },
+            err => next(err));
 
 };
 
@@ -32,18 +34,20 @@ controller.post = (req, res, next) => {
     Device.create(newDevice)
         .then(device => {
             res.json(device);
-        }, err => next(err));
+        },
+            err => next(err));
 };
 
 controller.getById = (req, res, next) => {
     var device = req.device; //taken from controller.params method
     //res.json(device);
     Device.findById(device.id)
-            .select('+password') //paswword is excluded in the Schema (select:false)
-            .exec()
-            .then(device => {
-                res.json(device);
-            }, err => next(err));    
+        .select('+password') //paswword is excluded in the Schema (select:false)
+        .exec()
+        .then(device => {
+            res.json(device);
+        },
+            err => next(err));
 };
 
 controller.putById = (req, res, next) => {
@@ -74,5 +78,40 @@ controller.deleteById = (req, res, next) => {
     });
 };
 
+controller.LoginRegister = (req, res, next) => {
+    var reqDevice = req.body;
+
+    Device.findOne({ name: reqDevice.name })
+        .select('+password') //paswword is excluded in the Schema (select:false)
+        .exec()
+        .then(device => {
+            if (!device) {
+                logger.log("device not found --> " + reqDevice.name + " ..creting new ");
+                Device.create(reqDevice)
+                    .then(createdDevice => {
+                        createdDevice = createdDevice.toObject(); //converts the mongoose object to JS object so its property can be deleted
+                        delete createdDevice.password;
+                        res.json(createdDevice);
+                    },
+                        err => next(err));
+            }
+            else {
+                if (device.password == reqDevice.password) {
+                    logger.log("ok name ok password --> " + reqDevice.name);
+                    device = device.toObject(); //converts the mongoose object to JS object so its property can be deleted
+                    delete device.password;
+                    res.json(device);
+                }
+                else {
+                    logger.log("ok name wrong password --> " + reqDevice.name);
+                    res.status(400);
+                    res.send("WRONG PASSWORD");
+                }
+            }
+
+        },
+            err => next(err));
+
+};
 
 module.exports = controller;

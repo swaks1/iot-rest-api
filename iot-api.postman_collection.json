@@ -1,0 +1,494 @@
+{
+	"info": {
+		"_postman_id": "ddb1b755-e95a-4e10-8a99-b64144ebe8c2",
+		"name": "iot-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "devices/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "devices/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"thirdDevice\",\n    \"password\": \"123456\",\n    \"description\": \"2device Descr\",\n    \"location\": {\n        \"lat\": \"40.1\",\n        \"lng\": \"33.2\",\n        \"description\":\"2location Descr\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "devices/ Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"forthDevice\",\n    \"password\" : \"123456\",\n    \"description\": \"2device Descr\",\n    \"location\": {\n        \"lat\": \"40.1\",\n        \"lng\": \"33.2\",\n        \"description\":\"2location Descr\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices/Login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "devices/id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"EditedSecondDevice\",\n    \"location\": {\n        \"lat\": \"40.1\",\n        \"lng\": \"33.2\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices/5c155ac37edd5241308289a9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices",
+						"5c155ac37edd5241308289a9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "devices/id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices/5c155d5abea777461420387a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices",
+						"5c155d5abea777461420387a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "devices/id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices/5c155ac37edd5241308289a9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices",
+						"5c155ac37edd5241308289a9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "data/id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/data/5c16a8b8216c0f2114582126",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"data",
+						"5c16a8b8216c0f2114582126"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "data/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"device\":\"5c155d5abea777461420387a\",\r\n\t\"dataItem\" : {\r\n\t\t\"dataValue\" : 2,\r\n\t\t\"dataType\" : \"LIGHT SENSOR\"\r\n\t}\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "data?deviceId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/data?deviceId=5c155d5abea777461420387a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"data"
+					],
+					"query": [
+						{
+							"key": "deviceId",
+							"value": "5c155d5abea777461420387a"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "data?deviceId",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/data?deviceId=5c155d5abea777461420387a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"data"
+					],
+					"query": [
+						{
+							"key": "deviceId",
+							"value": "5c155d5abea777461420387a"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command?deviceId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/command?deviceId=5c155d5abea777461420387a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"command"
+					],
+					"query": [
+						{
+							"key": "deviceId",
+							"value": "5c155d5abea777461420387a"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command/id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/command/5c168f6fa87f39066c82de6c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"command",
+						"5c168f6fa87f39066c82de6c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"device\":\"5c155d5abea777461420387a\",\r\n\t\"commandItem\" : {\r\n\t\t\"commandValue\" : true,\r\n\t\t\"commandType\" : \"IS_ACTIVE\"\r\n\t}\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/command",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"command"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command/notExecuted/deviceId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/command/notExecuted/5c155d5abea777461420387a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"command",
+						"notExecuted",
+						"5c155d5abea777461420387a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command/notExecuted/deviceId",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"executed\": true,\n        \"commandId\": \"5c1645a8c9c34634442c86a7\"\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/command/notExecuted/5c155d5abea777461420387a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"command",
+						"notExecuted",
+						"5c155d5abea777461420387a"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

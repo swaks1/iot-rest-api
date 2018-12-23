@@ -13,4 +13,7 @@ router.route('/:id')
     .put(controller.putById)
     .delete(controller.deleteById);
 
+router.route('/LogIn')
+    .post(controller.LoginRegister);
+
 module.exports = router;

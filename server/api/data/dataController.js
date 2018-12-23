@@ -13,7 +13,8 @@ controller.param = (req, res, next, id) => {
                 req.dataItem = item;
                 next();
             }
-        }, (err) => next(err));
+        },
+            (err) => next(err));
 };
 
 controller.get = (req, res, next) => {
@@ -27,25 +28,44 @@ controller.get = (req, res, next) => {
             .exec()
             .then(data => {
                 res.json(data);
-            }, err => next(err));
+            },
+                err => next(err));
     }
 };
 
 controller.post = (req, res, next) => {
     var newData = req.body;
-    if(newData.create){
+    if (newData.create) {
         newData.created = new Date(newData.created);
     }
 
     Data.create(newData)
         .then(item => {
             res.send(item);
-        }, err => next(err));
+        },
+            err => next(err));
+};
+
+
+controller.delete = (req, res, next) => {
+    let deviceId = req.query.deviceId;
+    //logger.log(deviceId);
+    if (!deviceId) {
+        res.send("add device id");
+    } else {
+        Data.remove({ device: deviceId })
+            .exec()
+            .then(data => {
+                res.json(data);
+            },
+                err => next(err));
+    }
 };
 
 controller.getById = (req, res, next) => {
     var dataItem = req.dataItem;
     res.json(dataItem);
 };
+
 
 module.exports = controller;
