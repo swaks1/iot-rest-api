@@ -15,6 +15,7 @@ var DeviceSchema = new Schema({
     location: {
         lat: String,
         lng: String,
+        accuracy:String,
         description: String
     }
 });

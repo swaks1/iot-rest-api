@@ -14,4 +14,7 @@ router.route('/notExecuted/:deviceId')
     .get(controller.getNotExecutedCommand)
     .post(controller.postExecutedCommand);
 
+router.route('/GetGoogleCertificate/Thumbprint')
+    .get(controller.getGoogleApiCert);
+
 module.exports = router;

@@ -85,4 +85,11 @@ controller.postExecutedCommand = (req, res, next) => {
             err => next(err));
 };
 
+controller.getGoogleApiCert = (req, res, next) => {    
+        var data = {};
+        //google certificate thumbrint for SSL
+        data.googleCert = [0xD6, 0x73, 0x98, 0x1A, 0x84, 0x96, 0x26, 0xD7, 0xF6, 0x10, 0x5D, 0x97, 0x8F, 0xE7, 0x47, 0x8A, 0x96, 0xB3, 0x46, 0x00]; //vazi do februari
+        res.json(data);
+};
+
 module.exports = controller;

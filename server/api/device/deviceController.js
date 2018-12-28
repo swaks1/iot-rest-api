@@ -1,4 +1,5 @@
 var Device = require('./deviceModel');
+var Command = require('../command/commandModel'); //maybe refactor this so logic for Commands wont be in the deviceController ?
 var logger = require('../../util/logger');
 var _ = require('lodash');
 
@@ -53,6 +54,10 @@ controller.getById = (req, res, next) => {
 controller.putById = (req, res, next) => {
     var device = req.device;
     var update = req.body;
+    
+    delete update.name;
+    delete update.password;
+    delete update._id;
 
     _.merge(device, update);
 
@@ -80,7 +85,6 @@ controller.deleteById = (req, res, next) => {
 
 controller.LoginRegister = (req, res, next) => {
     var reqDevice = req.body;
-
     Device.findOne({ name: reqDevice.name })
         .select('+password') //paswword is excluded in the Schema (select:false)
         .exec()
@@ -91,6 +95,8 @@ controller.LoginRegister = (req, res, next) => {
                     .then(createdDevice => {
                         createdDevice = createdDevice.toObject(); //converts the mongoose object to JS object so its property can be deleted
                         delete createdDevice.password;
+                        //add command for retrieving locaiton
+                        controller.AddLocationCommand(createdDevice._id);
                         res.json(createdDevice);
                     },
                         err => next(err));
@@ -112,6 +118,21 @@ controller.LoginRegister = (req, res, next) => {
         },
             err => next(err));
 
+};
+
+controller.AddLocationCommand = (id) => {
+    var command = {
+        device: id,
+        commandItem: {
+            commandValue: "",
+            commandType: "DEVICE_INFO"
+        }
+    };
+    Command.create(command)
+        .then(item => {
+            logger.log("Created Location Command for " + id + " with id" + item._id);
+        },
+            err => logger.error(err));
 };
 
 module.exports = controller;
