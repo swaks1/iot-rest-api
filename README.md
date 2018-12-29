@@ -1,5 +1,5 @@
 # iot-rest-api
-NodeJS and Express RESTful Api
+NodeJS and Express RESTful Api and ESP8266 SoC
 
 To Start:
 
