@@ -14,7 +14,7 @@ bool IS_ACTIVE = true;
 bool IS_LOGGED_IN = false;
 String DEVICE_ID = "";
 
-String GOOGLE_GEOLOCATION_FULL = "https://www.googleapis.com/geolocation/v1/geolocate?key=**ENTER_KEY_HERE**";
+String GOOGLE_GEOLOCATION_FULL = "https://www.googleapis.com/geolocation/v1/geolocate?key=ENTER_KEY_HERE";
 //Thumbprint od SSL sertifikatot na google...vazi do februari 2018.... vo setup se zema od API
 uint8_t fingerprint[20] = {0xD6, 0x73, 0x98, 0x1A, 0x84, 0x96, 0x26, 0xD7, 0xF6, 0x10, 0x5D, 0x97, 0x8F, 0xE7, 0x47, 0x8A, 0x96, 0xB3, 0x46, 0x00};
 int MAX_WIFI_SCAN = 127;
@@ -240,23 +240,9 @@ void GetCommand()
               Serial.printf("UNKNWON COMMAND  %s ... ?\n", commandItem_commandType);
             }
 
-            delay(500);
-
-            //POST to server that this command has been executed
-            Serial.printf("http post --POST_COMMAND-- for %s \n", _id);
-            stringVariable = "{\"executed\":true,\"commandId\":\"";
-            stringVariable += _id;
-            stringVariable += "\"}";
-            //http object is not closed... reusing the same connection ?
-            int httpCodePost = http.POST(stringVariable); //Send the request
-            if (httpCodePost > 0)
-            {
-              Serial.printf("http post --POST_COMMAND-- SUCCESSFULL ... Code: %d \t payload: %s \n", httpCodePost, http.getString().c_str());
-            }
-            else
-            {
-              Serial.printf("http post --POST_COMMAND-- FAILED !!! : %s\n", http.errorToString(httpCodePost).c_str());
-            }
+            delay(100);
+            //post that the command was executed
+            PostExecutedCommand(_id);
           }
           else
           {
@@ -279,9 +265,46 @@ void GetCommand()
     //update last check time
     lastCommandCheckTime = millis();
   }
+}
+
+void PostExecutedCommand(const char *_id)
+{
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    //Object of class HTTPClient
+    HTTPClient http;
+
+    Serial.print("\n\nhttp begin --POST_COMMAND--:\n");
+
+    if (http.begin(CHECK_COMMAND_ROUTE))
+    {
+      http.addHeader("Content-Type", "application/json"); //Specify content-type header
+
+      //POST to server that this command has been executed
+      Serial.printf("http post --POST_COMMAND-- for %s \n", _id);
+      stringVariable = "{\"executed\":true,\"commandId\":\"";
+      stringVariable += _id;
+      stringVariable += "\"}";
+      //http object is not closed... reusing the same connection ?
+      int httpCode = http.POST(stringVariable); //Send the request
+      if (httpCode > 0)
+      {
+        Serial.printf("http post --POST_COMMAND-- SUCCESSFULL ... Code: %d \t payload: %s \n", httpCode, http.getString().c_str());
+      }
+      else
+      {
+        Serial.printf("http post --POST_COMMAND-- FAILED !!! : %s\n", http.errorToString(httpCode).c_str());
+      }
+      http.end();
+    }
+    else
+    {
+      Serial.printf("http begin --POST_COMMAND-- FAILED !!! Unable to connect !!!!\n");
+    }
+  }
   else
   {
-    Serial.printf("WiFi not connected or timer --GET_COMMAND-- \n");
+    Serial.printf("WiFi not connected --POST_COMMAND-- \n");
   }
 }
 
@@ -301,7 +324,7 @@ void SendSensorValue(float value)
     //Object of class HTTPClient
     HTTPClient http;
 
-    Serial.print("\n\nhttp begin --SEND_DATA--:\n");
+    Serial.print("http begin --SEND_DATA--:\n");
 
     if (http.begin(DATA_ROUTE))
     {
@@ -346,10 +369,6 @@ void SendSensorValue(float value)
 
     //update last send time
     lastSendDataTime = millis();
-  }
-  else
-  {
-    Serial.printf("WiFi not connected or timer --SEND_DATA-- \n");
   }
 }
 

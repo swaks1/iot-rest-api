@@ -79,7 +79,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"forthDevice\",\n    \"password\" : \"123456\",\n    \"description\": \"2device Descr\",\n    \"location\": {\n        \"lat\": \"40.1\",\n        \"lng\": \"33.2\",\n        \"description\":\"2location Descr\"\n    }\n}"
+					"raw": "{\n    \"name\": \"forthDevice\",\n    \"password\" : \"123456\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/devices/Login",
@@ -109,10 +109,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"EditedSecondDevice\",\n    \"location\": {\n        \"lat\": \"40.1\",\n        \"lng\": \"33.2\"\n    }\n}"
+					"raw": "{\n    \"location\": {\n        \"lat\": \"20.1\",\n        \"lng\": \"13.2\",\n        \"accuracy\" : \"309\",\n        \"description\": \"Loc Descript\"\n    },\n    \"name\": \"ThisWontChange\",\n    \"description\": \"TEST Descr\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/devices/5c155ac37edd5241308289a9",
+					"raw": "http://localhost:8000/api/devices/5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -121,7 +121,7 @@
 					"path": [
 						"api",
 						"devices",
-						"5c155ac37edd5241308289a9"
+						"5c1fd30634a3bd28448284c8"
 					]
 				}
 			},
@@ -145,7 +145,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/devices/5c155d5abea777461420387a",
+					"raw": "http://localhost:8000/api/devices/5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -154,7 +154,7 @@
 					"path": [
 						"api",
 						"devices",
-						"5c155d5abea777461420387a"
+						"5c1fd30634a3bd28448284c8"
 					]
 				}
 			},
@@ -175,7 +175,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/devices/5c155ac37edd5241308289a9",
+					"raw": "http://localhost:8000/api/devices/5c1fa3aa0841ed4758e71df7",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -184,7 +184,7 @@
 					"path": [
 						"api",
 						"devices",
-						"5c155ac37edd5241308289a9"
+						"5c1fa3aa0841ed4758e71df7"
 					]
 				}
 			},
@@ -235,7 +235,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"device\":\"5c155d5abea777461420387a\",\r\n\t\"dataItem\" : {\r\n\t\t\"dataValue\" : 2,\r\n\t\t\"dataType\" : \"LIGHT SENSOR\"\r\n\t}\r\n}"
+					"raw": "{\r\n\t\"device\":\"5c1fa3aa0841ed4758e71df7\",\r\n\t\"dataItem\" : {\r\n\t\t\"dataValue\" : 2,\r\n\t\t\"dataType\" : \"LIGHT SENSOR\"\r\n\t}\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/data",
@@ -270,7 +270,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/data?deviceId=5c155d5abea777461420387a",
+					"raw": "http://localhost:8000/api/data?deviceId=5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -283,7 +283,7 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5c155d5abea777461420387a"
+							"value": "5c1fd30634a3bd28448284c8"
 						}
 					]
 				}
@@ -305,7 +305,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/data?deviceId=5c155d5abea777461420387a",
+					"raw": "http://localhost:8000/api/data?deviceId=5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -318,7 +318,7 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5c155d5abea777461420387a"
+							"value": "5c1fd30634a3bd28448284c8"
 						}
 					]
 				}
@@ -343,7 +343,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command?deviceId=5c155d5abea777461420387a",
+					"raw": "http://localhost:8000/api/command?deviceId=5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -356,7 +356,7 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5c155d5abea777461420387a"
+							"value": "5c1fd30634a3bd28448284c8"
 						}
 					]
 				}
@@ -408,7 +408,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"device\":\"5c155d5abea777461420387a\",\r\n\t\"commandItem\" : {\r\n\t\t\"commandValue\" : true,\r\n\t\t\"commandType\" : \"IS_ACTIVE\"\r\n\t}\r\n}"
+					"raw": "{\r\n\t\"device\":\"5c1fa3aa0841ed4758e71df7\",\r\n\t\"commandItem\" : {\r\n\t\t\"commandValue\" : true,\r\n\t\t\"commandType\" : \"IS_ACTIVE\"\r\n\t}\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/command",
@@ -443,7 +443,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command/notExecuted/5c155d5abea777461420387a",
+					"raw": "http://localhost:8000/api/command/notExecuted/5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -453,7 +453,7 @@
 						"api",
 						"command",
 						"notExecuted",
-						"5c155d5abea777461420387a"
+						"5c1fd30634a3bd28448284c8"
 					]
 				}
 			},
@@ -474,7 +474,7 @@
 					"raw": "    {\n        \"executed\": true,\n        \"commandId\": \"5c1645a8c9c34634442c86a7\"\n    }"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command/notExecuted/5c155d5abea777461420387a",
+					"raw": "http://localhost:8000/api/command/notExecuted/5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -484,7 +484,71 @@
 						"api",
 						"command",
 						"notExecuted",
-						"5c155d5abea777461420387a"
+						"5c1fd30634a3bd28448284c8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command/GetGoogleCertificate/Thumbprint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/command/GetGoogleCertificate/Thumbprint",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"command",
+						"GetGoogleCertificate",
+						"Thumbprint"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDB7fycP8ggQS7USqnAnnuJ9lZVXVg0WgM",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"considerIp\": \"false\",\r\n  \"wifiAccessPoints\": [\r\n\t{\"macAddress\":\"08:95:2A:5C:75:06\",\"signalStrength\":-79,\"channel\":1},\r\n\t{\"macAddress\":\"26:0D:C2:8D:40:71\",\"signalStrength\":-88,\"channel\":1},\r\n\t{\"macAddress\":\"BC:05:43:52:31:F0\",\"signalStrength\":-83,\"channel\":1},\r\n\t{\"macAddress\":\"C8:3A:35:ED:1B:B8\",\"signalStrength\":-89,\"channel\":1}\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDB7fycP8ggQS7USqnAnnuJ9lZVXVg0WgM",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"geolocation",
+						"v1",
+						"geolocate"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "AIzaSyDB7fycP8ggQS7USqnAnnuJ9lZVXVg0WgM"
+						}
 					]
 				}
 			},

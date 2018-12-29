@@ -59,7 +59,12 @@ controller.getNotExecutedCommand = (req, res, next) => {
             .sort({created: 'asc'})
             .exec()
             .then(data => {
-                res.json(data[0]);
+                if(data.length > 0){
+                    res.json(data[0]);
+                }
+                else{
+                    res.status(404).send();
+                }
             },
                 err => next(err));
     }
