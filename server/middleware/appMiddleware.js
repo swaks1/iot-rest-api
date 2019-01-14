@@ -1,10 +1,12 @@
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
+var cors = require('cors');
 
 
 // setup global middleware here
 
 module.exports = function (app) {
+    app.use(cors());
     app.use(morgan('dev'));
 
     // //inspect the request before sending to bodyParser.. BUT WILL BREAK THE PIPELINE....
