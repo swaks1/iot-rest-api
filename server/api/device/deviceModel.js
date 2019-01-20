@@ -18,6 +18,10 @@ var DeviceSchema = new Schema({
         accuracy: String,
         description: String
     },
+    sendDataDelay: {
+        type: Number,
+        default: 7000
+    },
     isActive: { type: Boolean, default: false },
     isAddedToDashboard: { type: Boolean, default: false }
 });
