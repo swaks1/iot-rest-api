@@ -22,6 +22,8 @@ controller.param = (req, res, next, id) => {
 
 controller.get = (req, res, next) => {
     Device.find({})
+        .sort({ created: 'desc' })
+        .exec()
         .then(devices => {
             res.json(devices);
         },
@@ -54,7 +56,7 @@ controller.getById = (req, res, next) => {
 controller.putById = (req, res, next) => {
     var device = req.device;
     var update = req.body;
-    
+
     delete update.name;
     delete update.password;
     delete update._id;

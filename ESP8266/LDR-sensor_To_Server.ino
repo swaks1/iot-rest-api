@@ -125,7 +125,7 @@ void LoginToServer()
 
           String payload = http.getString(); //.c_str() for print ?
 
-          const size_t bufferSize = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5) + 150;
+          const size_t bufferSize = JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(8) + 240;
           DynamicJsonBuffer jsonBuffer(bufferSize);
 
           JsonObject &root = jsonBuffer.parseObject(payload);
@@ -133,7 +133,9 @@ void LoginToServer()
           if (root.success())
           {
             DEVICE_ID = root["_id"].as<String>(); // "5c1fa3aa0841ed4758e71df7"
+            IS_ACTIVE = root["isActive"]; 
             IS_LOGGED_IN = true;
+            sendDataDelay = root["sendDataDelay"]; 
           }
           else
           {

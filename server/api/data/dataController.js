@@ -24,6 +24,7 @@ controller.get = (req, res, next) => {
         res.send("add device id");
     } else {
         Data.find({ device: deviceId })
+            .sort({ created: 'asc' })
             //.populate('device')
             .exec()
             .then(data => {
