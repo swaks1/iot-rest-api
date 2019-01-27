@@ -21,7 +21,7 @@ controller.get = (req, res, next) => {
     let deviceId = req.query.deviceId;
     let period = req.query.period;
     let pageSize = 10;
-    let dataType = "";
+    let dataType = "LIGHT SENSOR";
 
 
     //try get pageSize
@@ -35,21 +35,24 @@ controller.get = (req, res, next) => {
     if (req.query.dataType && req.query.dataType != "") {
         dataType = req.query.dataType;
     }
-    else {
-        //get first dataType by default
-        Data.collection.findOne()
-            .then(response => {
-                if (response != null) {
-                    dataType = response.dataItem.dataValue;
-                }
-                else {
-                    logger.log("No documents found (no dataType)");
-                    res.json([]);
-                }
+    //Get first one... but this is async so it doesnt work, dataType coninues empty in the below code... await needed here
+    // else {
+    //     //get first dataType by default
+    //     Data.collection.findOne()
+    //         .then(response => {
+    //             logger.log("OK");
+    //             if (response != null) {
+    //                 logger.log(response);
+    //                 dataType = response.dataItem.dataValue;
+    //             }
+    //             else {
+    //                 logger.log("No documents found (no dataType)");
+    //                 res.json([]);
+    //             }
 
-            })
-            .catch(err => next(err));
-    }
+    //         })
+    //         .catch(err => next(err));
+    // }
 
     if (!deviceId) {
         res.send("add device id");
@@ -114,7 +117,7 @@ controller.get = (req, res, next) => {
                                 return {
                                     dataItem: {
                                         dataValue: average,
-                                        dataType: item.dataType
+                                        dataType: dataType
                                     },
                                     _id: `data${index}`,
                                     device: deviceId,
@@ -178,7 +181,7 @@ controller.get = (req, res, next) => {
                                 return {
                                     dataItem: {
                                         dataValue: average,
-                                        dataType: item.dataType
+                                        dataType: dataType
                                     },
                                     _id: `data${index}`,
                                     device: deviceId,
@@ -206,8 +209,7 @@ controller.get = (req, res, next) => {
                     {
                         $group: {
                             _id: { year: { $year: "$created" }, month: { $month: "$created" }, day: { $dayOfMonth: "$created" }, hour: { $hour: "$created" }, minute: { $minute: "$created" } },
-                            average: { $avg: "$dataValueDecimal" },
-                            dataType: { $first: "$dataItem.dataType" }
+                            average: { $avg: "$dataValueDecimal" }
                         }
                     },
                     {
@@ -255,12 +257,11 @@ controller.get = (req, res, next) => {
                                 return {
                                     dataItem: {
                                         dataValue: average,
-                                        dataType: item.dataType
+                                        dataType: dataType
                                     },
                                     _id: `data${index}`,
                                     device: deviceId,
-                                    created: `${year}-${month}-${day}T${hour}:${minute}`,
-                                    dataType: dataType
+                                    created: `${year}-${month}-${day}T${hour}:${minute}`
                                 };
                             });
                             res.json(mappedData);

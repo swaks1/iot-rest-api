@@ -58,8 +58,6 @@ controller.getById = (req, res, next) => {
                     res.json(deviceObj);
                 })
                 .catch(err => next(err));
-
-
         },
             err => next(err));
 };
