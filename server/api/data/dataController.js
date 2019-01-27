@@ -21,6 +21,8 @@ controller.get = (req, res, next) => {
     let deviceId = req.query.deviceId;
     let period = req.query.period;
     let pageSize = 10;
+    let dataType = "";
+
 
     //try get pageSize
     try {
@@ -30,19 +32,47 @@ controller.get = (req, res, next) => {
         logger.error(error);
     }
 
+    if (req.query.dataType && req.query.dataType != "") {
+        dataType = req.query.dataType;
+    }
+    else {
+        //get first dataType by default
+        Data.collection.findOne()
+            .then(response => {
+                if (response != null) {
+                    dataType = response.dataItem.dataValue;
+                }
+                else {
+                    logger.log("No documents found (no dataType)");
+                    res.json([]);
+                }
+
+            })
+            .catch(err => next(err));
+    }
+
     if (!deviceId) {
         res.send("add device id");
-    } else {
+    }
+    else {
+
         let currentYear = new Date().getFullYear();
 
+        //EXAMPLE
+        //$match: {
+        //    'created': { $gt: new Date(`${currentYear}-01-01T00:00:00.000Z`) }, //only those in last year
+        //}
+
+        let match = {};
+        match['dataItem.dataType'] = dataType;
+
         switch (period) {
-            case "monthly":
-                //return grouped by month for current year
+            case "monthly": //return grouped by month for current year
+
+                match['created'] = { $gt: new Date(`${currentYear}-01-01T00:00:00.000Z`) }; //only those in last year
                 Data.aggregate([
                     {
-                        $match: {
-                            'created': { $gt: new Date(`${currentYear}-01-01T00:00:00.000Z`) } //only those in last hour
-                        }
+                        $match: match
                     },
                     {
                         $addFields: {
@@ -53,7 +83,6 @@ controller.get = (req, res, next) => {
                         $group: {
                             _id: { month: { $month: "$created" } },
                             average: { $avg: "$dataValueDecimal" },
-                            dataType: { $first: "$dataItem.dataType" }
                         }
                     },
                     {
@@ -89,7 +118,8 @@ controller.get = (req, res, next) => {
                                     },
                                     _id: `data${index}`,
                                     device: deviceId,
-                                    created: `${year}-${month}`
+                                    created: `${year}-${month}`,
+                                    dataType: dataType
                                 };
                             });
                             res.json(mappedData);
@@ -97,9 +127,11 @@ controller.get = (req, res, next) => {
 
                     });
                 break;
-            case "daily":
-                //return grouped by day
+            case "daily": //return grouped by day
                 Data.aggregate([
+                    {
+                        $match: match
+                    },
                     {
                         $addFields: {
                             dataValueDecimal: { $convert: { input: "$dataItem.dataValue", to: "decimal", onError: "Error", onNull: 0 } },
@@ -109,7 +141,6 @@ controller.get = (req, res, next) => {
                         $group: {
                             _id: { year: { $year: "$created" }, month: { $month: "$created" }, day: { $dayOfMonth: "$created" } },
                             average: { $avg: "$dataValueDecimal" },
-                            dataType: { $first: "$dataItem.dataType" }
                         }
                     },
                     {
@@ -151,7 +182,8 @@ controller.get = (req, res, next) => {
                                     },
                                     _id: `data${index}`,
                                     device: deviceId,
-                                    created: `${year}-${month}-${day}`
+                                    created: `${year}-${month}-${day}`,
+                                    dataType: dataType
                                 };
                             });
                             res.json(mappedData);
@@ -159,13 +191,12 @@ controller.get = (req, res, next) => {
 
                     });
                 break;
-            case "lastHour":
-                //return only those in last hour grouped by minute
+            case "lastHour": //return only those in last hour grouped by minute
+
+                match['created'] = { $gt: new Date(Date.now() - 1000 * 60 * 60) }; //only those in last hour
                 Data.aggregate([
                     {
-                        $match: {
-                            'created': { $gt: new Date(Date.now() - 1000 * 60 * 60) } //only those in last hour
-                        }
+                        $match: match
                     },
                     {
                         $addFields: {
@@ -228,7 +259,8 @@ controller.get = (req, res, next) => {
                                     },
                                     _id: `data${index}`,
                                     device: deviceId,
-                                    created: `${year}-${month}-${day}T${hour}:${minute}`
+                                    created: `${year}-${month}-${day}T${hour}:${minute}`,
+                                    dataType: dataType
                                 };
                             });
                             res.json(mappedData);
@@ -236,9 +268,13 @@ controller.get = (req, res, next) => {
 
                     });
                 break;
-            default: //or period=mostRecent
-                //return most recent data
-                Data.find({ device: deviceId })
+            default: //or period=mostRecent...return most recent data
+                var query = {};
+                query["device"] = deviceId;
+                query["dataItem.dataType"] = dataType;
+
+
+                Data.find(query)
                     .sort({ created: 'desc' })
                     .limit(pageSize)
                     .exec()

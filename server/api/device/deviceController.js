@@ -1,5 +1,6 @@
 var Device = require('./deviceModel');
 var Command = require('../command/commandModel'); //maybe refactor this so logic for Commands wont be in the deviceController ?
+var Data = require('../data/dataModel');
 var logger = require('../../util/logger');
 var _ = require('lodash');
 
@@ -45,10 +46,20 @@ controller.getById = (req, res, next) => {
     var device = req.device; //taken from controller.params method
     //res.json(device);
     Device.findById(device.id)
-        .select('+password') //paswword is excluded in the Schema (select:false)
+        //.select('+password') //paswword is excluded in the Schema (select:false)
         .exec()
         .then(device => {
-            res.json(device);
+            let deviceObj = device.toObject(); //converts the mongoose object to JS object so its property can be deleted
+
+            Data.collection
+                .distinct("dataItem.dataType", { device: device._id })
+                .then(resp => {
+                    deviceObj.dataTypes = resp;
+                    res.json(deviceObj);
+                })
+                .catch(err => next(err));
+
+
         },
             err => next(err));
 };
