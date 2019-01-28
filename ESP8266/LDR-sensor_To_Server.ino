@@ -34,6 +34,7 @@ bool shouldCheckCommand = false;
 
 unsigned long sendDataDelay = 5000;
 unsigned long lastSendDataTime;
+unsigned long lastSendDataTimeRandomValue;
 bool shouldSendData = false;
 
 unsigned long currentTime;
@@ -61,6 +62,9 @@ void loop()
 
   //send data to server
   SendSensorValue(voltage);
+
+  //send random data to server
+  SendRandomValue();
 
   //check if there are commands on the server
   GetCommand();
@@ -343,7 +347,7 @@ void SendSensorValue(float value)
 
       JsonObject &dataItem = root.createNestedObject("dataItem");
       dataItem["dataValue"] = value;
-      dataItem["dataType"] = "LIGHT SENSOR";
+      dataItem["dataType"] = "LIGHT_SENSOR";
 
       stringVariable = "";
       root.printTo(stringVariable);
@@ -371,6 +375,71 @@ void SendSensorValue(float value)
 
     //update last send time
     lastSendDataTime = millis();
+  }
+}
+
+void SendRandomValue()
+{
+  shouldSendData = false;
+  currentTime = millis();
+  if (currentTime - lastSendDataTimeRandomValue > sendDataDelay)
+  {
+    shouldSendData = true;
+  }
+
+  if (IS_ACTIVE && shouldSendData && WiFi.status() == WL_CONNECTED)
+  {
+    long value = random(0, 20)
+    Serial.printf("\n\nv:  %f \n", value); // print out the value
+
+    //Object of class HTTPClient
+    HTTPClient http;
+
+    Serial.print("http begin --SEND_DATA--:\n");
+
+    if (http.begin(DATA_ROUTE))
+    {
+
+      http.addHeader("Content-Type", "application/json"); //Specify content-type header
+
+      //CREATE PYALOAD
+      const size_t bufferSize = 2 * JSON_OBJECT_SIZE(2);
+      DynamicJsonBuffer jsonBuffer(bufferSize);
+
+      JsonObject &root = jsonBuffer.createObject();
+
+      root["device"] = DEVICE_ID;
+
+      JsonObject &dataItem = root.createNestedObject("dataItem");
+      dataItem["dataValue"] = value;
+      dataItem["dataType"] = "RANDOM_NUMBER";
+
+      stringVariable = "";
+      root.printTo(stringVariable);
+      //END CREATE PYALOAD
+
+      Serial.printf("http post --SEND_DATA-- for %s \n", DEVICE_ID.c_str());
+      // start connection and send HTTP header
+      int httpCode = http.POST(stringVariable);
+
+      if (httpCode > 0)
+      {
+        Serial.printf("http post --SEND_DATA-- SUCCESSFULL ... Code: %d \t payload: %s \n", httpCode, http.getString().c_str());
+      }
+      else
+      {
+        Serial.printf("http post --SEND_DATA-- FAILED !!! : %s\n", http.errorToString(httpCode).c_str());
+      }
+
+      http.end();
+    }
+    else
+    {
+      Serial.printf("http begin --SEND_DATA-- FAILED !!! Unable to connect !!!!\n");
+    }
+
+    //update last send time
+    lastSendDataTimeRandomValue = millis();
   }
 }
 
