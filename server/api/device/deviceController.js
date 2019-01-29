@@ -49,7 +49,7 @@ controller.getById = (req, res, next) => {
         //.select('+password') //paswword is excluded in the Schema (select:false)
         .exec()
         .then(device => {
-            let deviceObj = device.toObject(); //converts the mongoose object to JS object so its property can be deleted
+            let deviceObj = device.toObject(); //converts the mongoose object to JS object 
 
             Data.collection
                 .distinct("dataItem.dataType", { device: device._id })

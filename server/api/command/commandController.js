@@ -1,6 +1,7 @@
 var Command = require('./commandModel');
 var Device = require('../device/deviceModel');
 var logger = require('../../util/logger');
+var helper = require('../../util/helper');
 var _ = require('lodash');
 
 var controller = {};
@@ -18,7 +19,13 @@ controller.get = (req, res, next) => {
             .limit(5)
             .exec()
             .then(data => {
-                res.json(data);
+                //mongoose saves dates as UTC so we convert here to local
+                let mappedData = data.map(item => {
+                    let itemObj = item.toObject();
+                    itemObj.created = helper.getDate(item.created);
+                    return itemObj;
+                });
+                res.json(mappedData);
             },
                 err => next(err));
     }
