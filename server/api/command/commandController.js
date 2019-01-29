@@ -19,12 +19,7 @@ controller.get = (req, res, next) => {
             .limit(5)
             .exec()
             .then(data => {
-                //mongoose saves dates as UTC so we convert here to local
-                let mappedData = data.map(item => {
-                    let itemObj = item.toObject();
-                    itemObj.created = helper.getDate(item.created);
-                    return itemObj;
-                });
+                let mappedData = helper.fixDates(data, 'created');
                 res.json(mappedData);
             },
                 err => next(err));
