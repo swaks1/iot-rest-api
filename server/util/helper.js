@@ -10,18 +10,27 @@ var helper = {
 
     },
 
+    //Local date to string
     getDate: function (isoString) {
         return moment(isoString).format();
     },
 
-     //mongoose saves dates as UTC so we convert here to local
-    fixDates: function (mongooseArray, property) {
-        let mappedData = mongooseArray.map(item => {
-            let itemObj = item.toObject();
-            itemObj[property] = helper.getDate(item[property]);
+    //mongoose saves dates as UTC so we convert here to local
+    fixDates: function (mongooseObject, property) {
+        if (mongooseObject instanceof Array) {
+            let mappedData = mongooseObject.map(item => {
+                let itemObj = item.toObject();
+                itemObj[property] = helper.getDate(itemObj[property]);
+                return itemObj;
+            });
+            return mappedData;
+        }
+        else {
+            let itemObj = mongooseObject.toObject();
+            itemObj[property] = helper.getDate(itemObj[property]);
             return itemObj;
-        });
-        return mappedData;
+        }
+
     }
 };
 

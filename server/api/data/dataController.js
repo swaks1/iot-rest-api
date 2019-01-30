@@ -1,5 +1,6 @@
 var Data = require('./dataModel');
 var logger = require('../../util/logger');
+var helper = require('../../util/helper');
 var _ = require('lodash');
 
 var controller = {};
@@ -21,7 +22,7 @@ controller.get = (req, res, next) => {
     let deviceId = req.query.deviceId;
     let period = req.query.period;
     let pageSize = 10;
-    let dataType = "LIGHT SENSOR";
+    let dataType = "LIGHT_SENSOR";
 
 
     //try get pageSize
@@ -254,6 +255,8 @@ controller.get = (req, res, next) => {
                                     minute = "0" + minute;
                                 }
 
+                                let localDate = helper.getDate(`${year}-${month}-${day}T${hour}:${minute}`);
+
                                 return {
                                     dataItem: {
                                         dataValue: average,
@@ -261,7 +264,7 @@ controller.get = (req, res, next) => {
                                     },
                                     _id: `data${index}`,
                                     device: deviceId,
-                                    created: `${year}-${month}-${day}T${hour}:${minute}`
+                                    created: localDate.substring(0, 16)
                                 };
                             });
                             res.json(mappedData);
@@ -280,7 +283,8 @@ controller.get = (req, res, next) => {
                     .limit(pageSize)
                     .exec()
                     .then(data => {
-                        res.json(data);
+                        let dataObj = helper.fixDates(data, 'created');
+                        res.json(dataObj);
                     },
                         err => next(err));
 
@@ -297,7 +301,8 @@ controller.post = (req, res, next) => {
 
     Data.create(newData)
         .then(item => {
-            res.send(item);
+            let itemObj = helper.fixDates(item, 'created');
+            res.send(itemObj);
         },
             err => next(err));
 };
@@ -312,7 +317,8 @@ controller.delete = (req, res, next) => {
         Data.remove({ device: deviceId })
             .exec()
             .then(data => {
-                res.json(data);
+                let dataObj = helper.fixDates(data, 'created');
+                res.json(dataObj);
             },
                 err => next(err));
     }
@@ -320,7 +326,8 @@ controller.delete = (req, res, next) => {
 
 controller.getById = (req, res, next) => {
     var dataItem = req.dataItem;
-    res.json(dataItem);
+    var dataItemObj = helper.fixDates(dataItem, 'created');
+    res.json(dataItemObj);
 };
 
 

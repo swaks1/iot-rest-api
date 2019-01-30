@@ -34,7 +34,8 @@ controller.post = (req, res, next) => {
 
     Command.create(newData)
         .then(item => {
-            res.send(item);
+            let itemObj = helper.fixDates(item, 'created');
+            res.send(itemObj);
         },
             err => next(err));
 };
@@ -48,7 +49,8 @@ controller.getById = (req, res, next) => {
             //.populate('device')
             .exec()
             .then(data => {
-                res.json(data);
+                let dataObj = helper.fixDates(data, 'created');
+                res.json(dataObj);
             },
                 err => next(err));
     }
@@ -65,7 +67,8 @@ controller.getNotExecutedCommand = (req, res, next) => {
             .exec()
             .then(data => {
                 if (data.length > 0) {
-                    res.json(data[0]);
+                    let firstCommand = helper.fixDates(data[0], 'created');
+                    res.json(firstCommand);
                 }
                 else {
                     res.status(404).send();
@@ -128,9 +131,10 @@ controller.UpdateDeviceFromExecutedCommand = (command) => {
 
 controller.getGoogleApiCert = (req, res, next) => {
     var data = {};
-    //google certificate thumbrint for SSL
+    //google certificate thumbrint for SSL.... https://www.googleapis.com/geolocation/v1/geolocate
     //data.googleCert = [0xD6, 0x73, 0x98, 0x1A, 0x84, 0x96, 0x26, 0xD7, 0xF6, 0x10, 0x5D, 0x97, 0x8F, 0xE7, 0x47, 0x8A, 0x96, 0xB3, 0x46, 0x00]; //vazi do februari
-    data.googleCert = [0xBB, 0x64, 0x14, 0x3F, 0x4B, 0x0D, 0x81, 0xF5, 0xE0, 0xDA, 0xD3, 0x2C, 0x03, 0x80, 0x01, 0x8E, 0xDB, 0x78, 0x1D, 0xEF]; //vazi do april
+    //data.googleCert = [0xBB, 0x64, 0x14, 0x3F, 0x4B, 0x0D, 0x81, 0xF5, 0xE0, 0xDA, 0xD3, 0x2C, 0x03, 0x80, 0x01, 0x8E, 0xDB, 0x78, 0x1D, 0xEF]; //vazi do april
+    data.googleCert = [0x95, 0xA7, 0x69, 0x0D, 0x58, 0x4A, 0x35, 0x57, 0xB6, 0x4E, 0xE1, 0x72, 0xE7, 0xC1, 0x01, 0xBD, 0xCA, 0xA8, 0xE7, 0x7A];
 
     res.json(data);
 };
