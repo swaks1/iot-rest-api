@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../server";
-import { User } from "../resources/user/user.model";
+import { User } from "../api/user/user.model";
 import { newToken } from "../utils/auth";
 import mongoose from "mongoose";
 

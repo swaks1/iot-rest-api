@@ -3,5 +3,8 @@
 
 export const config = {
   logging: false,
-  dbUrl: "mongodb://localhost:27017/iotApp-prod"
+  dbUrl: "mongodb://localhost:27017/iotApp-prod",
+  secrets: {
+    jwt: "learneverything"
+  }
 };

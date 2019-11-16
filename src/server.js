@@ -3,11 +3,11 @@ import { json, urlencoded } from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
 import config from "./config";
+import logger from "./utils/logger";
 import { signup, signin, protect } from "./utils/auth";
-import { connect } from "./utils/db";
-import userRouter from "./resources/user/user.router";
-import itemRouter from "./resources/item/item.router";
-import listRouter from "./resources/list/list.router";
+import { connectToDatabase } from "./utils/database";
+
+import apiRouter from "./api";
 
 export const app = express();
 
@@ -21,18 +21,22 @@ app.use(morgan("dev"));
 app.post("/signup", signup);
 app.post("/signin", signin);
 
-app.use("/api", protect);
-app.use("/api/user", userRouter);
-app.use("/api/item", itemRouter);
-app.use("/api/list", listRouter);
+// app.use("/api", protect);
+app.use("/api", apiRouter);
+
+// set up global error handling
+app.use((err, req, res, next) => {
+  logger.error(err.stack);
+  res.status(500).send("Oops...Internal Server Error\n\n" + err.stack);
+});
 
 export const start = async () => {
   try {
-    await connect();
+    await connectToDatabase();
     app.listen(config.port, () => {
-      console.log(`REST API on http://localhost:${config.port}/api`);
+      logger.log(`REST API on http://localhost:${config.port}/api`);
     });
   } catch (e) {
-    console.error(e);
+    logger.error(e);
   }
 };
