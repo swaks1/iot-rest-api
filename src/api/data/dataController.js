@@ -346,15 +346,11 @@ controller.delete = async (req, res, next) => {
   if (!deviceId) {
     res.send("add device id");
   } else {
-    await Data.remove({ device: deviceId })
+    var removed = await Data.remove({ device: deviceId })
       .exec()
-      .then(
-        data => {
-          let dataObj = helper.fixDates(data, "created");
-          res.json(dataObj);
-        },
-        err => next(err)
-      );
+      .catch(err => next(err));
+
+    res.json(removed);
   }
 };
 
