@@ -1,0 +1,5 @@
+1.Find all processes listening on port (9229)
+	netstat -ano | findstr :9229
+	
+2. Kill the porcess with PID 1392
+	taskkill /PID 1392 /F

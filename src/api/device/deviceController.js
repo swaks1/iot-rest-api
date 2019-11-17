@@ -19,15 +19,12 @@ controller.param = async (req, res, next, id) => {
 };
 
 controller.get = async (req, res, next) => {
-  await Device.find({})
+  var devices = await Device.find({})
     .sort({ created: "desc" })
     .exec()
-    .then(
-      devices => {
-        res.json(devices);
-      },
-      err => next(err)
-    );
+    .catch(err => next(err));
+
+  res.json(devices);
 };
 
 controller.post = async (req, res, next) => {

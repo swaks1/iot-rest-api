@@ -7,11 +7,6 @@
   "license": "ISC",
   "scripts": {
     "build": "babel src --out-dir dist",
-    "test": "NODE_ENV=testing jest --forceExit --detectOpenHandles  --silent",
-    "test-routes": "yarn test -t router",
-    "test-models": "yarn test -t model",
-    "test-controllers": "yarn test -t controllers",
-    "test-auth": "yarn test -t Authentication:",
     "dev_dist": "nodemon --exec yarn restart",
     "dev": "nodemon --exec babel-node src/index.js",
     "debug": "nodemon --inspect --watch src --exec node_modules/.bin/babel-node src/index.js",
@@ -28,7 +23,7 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
-    "mongoose": "^5.5.4",
+    "mongoose": "^5.7.11",
     "morgan": "^1.9.1",
     "validator": "^10.9.0",
     "moment": "^2.24.0",
@@ -58,15 +53,5 @@
     "prettier": "^1.15.2",
     "rimraf": "^2.6.2",
     "supertest": "^3.3.0"
-  },
-  "jest": {
-    "verbose": true,
-    "testURL": "http://localhost/",
-    "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "<rootDir>/test-db-setup.js",
-    "testPathIgnorePatterns": [
-      "dist/"
-    ],
-    "restoreMocks": true
   }
 }

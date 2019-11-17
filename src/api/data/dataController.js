@@ -346,7 +346,7 @@ controller.delete = async (req, res, next) => {
   if (!deviceId) {
     res.send("add device id");
   } else {
-    var removed = await Data.remove({ device: deviceId })
+    var removed = await Data.deleteOne({ device: deviceId })
       .exec()
       .catch(err => next(err));
 
