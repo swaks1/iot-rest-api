@@ -30,13 +30,17 @@ app.use((err, req, res, next) => {
   res.status(500).send("Oops...Internal Server Error\n\n" + err.stack);
 });
 
-export const start = async () => {
+export const startServer = async () => {
   try {
-    await connectToDatabase();
+    var dbConnection = await connectToDatabase();
+    if (!dbConnection) return Promise.resolve(false);
+
     app.listen(config.port, () => {
       logger.log(`REST API on http://localhost:${config.port}/api`);
     });
+    return Promise.resolve(true);
   } catch (e) {
     logger.error(e);
+    return Promise.resolve(false);
   }
 };
