@@ -33,14 +33,14 @@ app.use((err, req, res, next) => {
 export const startServer = async () => {
   try {
     var dbConnection = await connectToDatabase();
-    if (!dbConnection) return Promise.resolve(false);
+    if (!dbConnection) throw new Error("Cannot connect to Database !!");
 
     app.listen(config.port, () => {
       logger.log(`REST API on http://localhost:${config.port}/api`);
     });
-    return Promise.resolve(true);
   } catch (e) {
     logger.error(e);
     return Promise.resolve(false);
   }
+  return Promise.resolve(true);
 };

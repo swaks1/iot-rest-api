@@ -24,7 +24,11 @@ var DeviceSchema = new Schema({
     default: 7000
   },
   isActive: { type: Boolean, default: false },
-  isAddedToDashboard: { type: Boolean, default: false }
+  isAddedToDashboard: { type: Boolean, default: false },
+  ttnInfo: {
+    app_id: String,
+    dev_id: String
+  }
 });
 
 export default mongoose.model("device", DeviceSchema);

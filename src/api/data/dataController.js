@@ -1,6 +1,7 @@
 import Data from "./dataModel";
 import logger from "./../../utils/logger";
 import helper from "./../../utils/helper";
+import mongoose from "mongoose";
 
 var controller = {};
 
@@ -65,7 +66,7 @@ controller.get = async (req, res, next) => {
 
     let match = {};
     match["dataItem.dataType"] = dataType;
-
+    match["device"] = mongoose.Types.ObjectId(deviceId); // must be cast to ObjectId to work
     switch (period) {
       case "monthly": // return grouped by month for current year
         match["created"] = {
@@ -309,7 +310,6 @@ controller.get = async (req, res, next) => {
         var query = {};
         query["device"] = deviceId;
         query["dataItem.dataType"] = dataType;
-
         await Data.find(query)
           .sort({ created: "desc" })
           .limit(pageSize)
