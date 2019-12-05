@@ -1,39 +1,33 @@
 import config from "./config";
 import logger from "./utils/logger";
-import { data, application } from "ttn";
+import { data as DataTTN, application as AppTTN, key } from "ttn";
 import Device from "./api/device/deviceModel";
 import Data from "./api/data/dataModel";
+
+var client = null;
+var application = null;
+var euis = null;
 
 export const startTTN = async () => {
   const appID = config.ttnAppId;
   const accessKey = config.ttnAccessKey;
 
-  // discover handler and open mqtt connection
-  data(appID, accessKey)
-    .then(function(client) {
-      client.on("uplink", function(devID, payload) {
-        saveData(devID, payload);
-        console.log("Received uplink from ", devID);
-        console.log(payload);
-      });
-    })
-    .catch(function(err) {
-      console.error(err);
-      // process.exit(1);
-    });
+  // mqqt client
+  client = await DataTTN(appID, accessKey);
 
-  // discover handler and open application manager client
-  application(appID, accessKey)
-    .then(function(client) {
-      return client.get();
-    })
-    .then(function(app) {
-      console.log("Got app", app);
-    })
-    .catch(function(err) {
-      console.error(err);
-      // process.exit(1);
-    });
+  client.on("uplink", function(devID, payload) {
+    logger.log(devID, payload);
+    saveData(devID, payload);
+    // send downlink
+    // client.send("airbnb", new Buffer([ 0x0f, 0xaf ]))
+  });
+
+  // application manager client
+  application = await AppTTN(appID, accessKey);
+
+  euis = await application.getEUIs();
+  const app = await application.get();
+  logger.log("Got app", app);
 
   // var obj = {
   //   app_id: "lorawan_test_app",
@@ -52,6 +46,30 @@ export const startTTN = async () => {
   //   }
   // };
   // await saveData("1", obj);
+};
+
+export const GetDevices = async () => {
+  return application.devices();
+};
+
+export const GetDevice = async devId => {
+  return application.device(devId);
+};
+
+export const SaveDevice = async (devId, ttnDevice) => {
+  return application.registerDevice(devId, {
+    description: "Description",
+    appEui: euis[0],
+    devEui: "9988776655443322",
+    devAddr: "11223344",
+    nwkSKey: key(16),
+    appSKey: key(16),
+    appKey: key(16)
+  });
+};
+
+export const DeleteDevice = async devId => {
+  return application.deleteDevice(devId);
 };
 
 var saveData = async (devID, payload) => {
