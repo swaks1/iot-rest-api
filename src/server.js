@@ -27,7 +27,9 @@ app.use("/api", apiRouter);
 // set up global error handling
 app.use((err, req, res, next) => {
   logger.error(err.stack);
-  res.status(500).send("Oops...Internal Server Error\n\n" + err.stack);
+  res.headersSent
+    ? logger.error("RESPONSE ALREADY SENT !!!")
+    : res.status(500).send("Oops...Internal Server Error\n\n" + err.stack);
 });
 
 export const startServer = async () => {

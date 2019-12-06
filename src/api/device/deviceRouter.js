@@ -18,5 +18,6 @@ router
   .delete(controller.deleteById);
 
 router.route("/LogIn").post(controller.LoginRegister);
+router.route("/modifyTTNInfo").post(controller.modifyTTNInfo);
 
 export default router;

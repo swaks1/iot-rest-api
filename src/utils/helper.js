@@ -28,6 +28,12 @@ var helper = {
       itemObj[property] = helper.getDate(itemObj[property]);
       return itemObj;
     }
+  },
+
+  getRandomHexString: length => {
+    return Math.random()
+      .toString(16)
+      .slice(2, length + 2);
   }
 };
 

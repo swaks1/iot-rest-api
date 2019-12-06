@@ -1,11 +1,12 @@
 import config from "./config";
 import logger from "./utils/logger";
+import helper from "./utils/helper";
 import { data as DataTTN, application as AppTTN, key } from "ttn";
 import Device from "./api/device/deviceModel";
 import Data from "./api/data/dataModel";
 
-var client = null;
-var application = null;
+var dataClient = null;
+var applicationClient = null;
 var euis = null;
 
 export const startTTN = async () => {
@@ -13,20 +14,18 @@ export const startTTN = async () => {
   const accessKey = config.ttnAccessKey;
 
   // mqqt client
-  client = await DataTTN(appID, accessKey);
+  dataClient = await DataTTN(appID, accessKey);
 
-  client.on("uplink", function(devID, payload) {
+  dataClient.on("uplink", function(devID, payload) {
     logger.log(devID, payload);
     saveData(devID, payload);
-    // send downlink
-    // client.send("airbnb", new Buffer([ 0x0f, 0xaf ]))
   });
 
   // application manager client
-  application = await AppTTN(appID, accessKey);
+  applicationClient = await AppTTN(appID, accessKey);
 
-  euis = await application.getEUIs();
-  const app = await application.get();
+  euis = await applicationClient.getEUIs();
+  const app = await applicationClient.get();
   logger.log("Got app", app);
 
   // var obj = {
@@ -46,30 +45,6 @@ export const startTTN = async () => {
   //   }
   // };
   // await saveData("1", obj);
-};
-
-export const GetDevices = async () => {
-  return application.devices();
-};
-
-export const GetDevice = async devId => {
-  return application.device(devId);
-};
-
-export const SaveDevice = async (devId, ttnDevice) => {
-  return application.registerDevice(devId, {
-    description: "Description",
-    appEui: euis[0],
-    devEui: "9988776655443322",
-    devAddr: "11223344",
-    nwkSKey: key(16),
-    appSKey: key(16),
-    appKey: key(16)
-  });
-};
-
-export const DeleteDevice = async devId => {
-  return application.deleteDevice(devId);
 };
 
 var saveData = async (devID, payload) => {
@@ -101,3 +76,44 @@ var saveData = async (devID, payload) => {
     logger.log("Device doesn't exist");
   }
 };
+
+var ttnApplicationMethods = {};
+
+ttnApplicationMethods.getDevices = async () => {
+  return applicationClient.devices();
+};
+
+ttnApplicationMethods.getDevice = async devId => {
+  return applicationClient.device(devId);
+};
+
+ttnApplicationMethods.saveDevice = async ttnDevice => {
+  return applicationClient.registerDevice(ttnDevice.devId, {
+    activation_constraints: ttnDevice.activation,
+    description: ttnDevice.description,
+    appEui: euis[0],
+    devEui: helper.getRandomHexString(8) + helper.getRandomHexString(8), // 16 character long hex format
+    devAddr: "2601" + helper.getRandomHexString(4),
+    nwkSKey: key(16),
+    appSKey: key(16),
+    appKey: key(16)
+  });
+};
+
+ttnApplicationMethods.DeleteDevice = async devId => {
+  return applicationClient.deleteDevice(devId);
+};
+
+var ttnDataMethods = {};
+
+ttnDataMethods.sendUplink = async (
+  devId,
+  hexDataArray,
+  port = 1,
+  confirmed = false
+) => {
+  dataClient.send(devId, Buffer.from(hexDataArray), port, confirmed);
+};
+
+export const ttnApplicationAPI = ttnApplicationMethods;
+export const ttnDataAPI = ttnDataMethods;
