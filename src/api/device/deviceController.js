@@ -40,24 +40,7 @@ controller.post = async (req, res, next) => {
 
 controller.getById = async (req, res, next) => {
   var device = req.device; // taken from controller.params method
-  // res.json(device);
-  await Device.findById(device.id)
-    // .select('+password') // paswword is excluded in the Schema (select:false)
-    .exec()
-    .then(
-      device => {
-        let deviceObj = device.toObject(); // converts the mongoose object to JS object
-
-        Data.collection
-          .distinct("dataItem.dataType", { device: device._id })
-          .then(resp => {
-            deviceObj.dataTypes = resp;
-            res.json(deviceObj);
-          })
-          .catch(err => next(err));
-      },
-      err => next(err)
-    );
+  res.json(device);
 };
 
 controller.putById = async (req, res, next) => {
@@ -88,6 +71,23 @@ controller.deleteById = (req, res, next) => {
       res.json(removed);
     }
   });
+};
+
+controller.reloadDataTypes = async (req, res, next) => {
+  var deviceId = req.body.deviceId;
+  if (!deviceId) {
+    next(new Error("No device with that id.."));
+    return;
+  }
+  var device = await Device.findById(deviceId).catch(err => next(err));
+
+  let dataTypes = await Data.collection
+    .distinct("dataItem.dataType", { device: device._id })
+    .catch(err => next(err));
+
+  device.dataTypes = dataTypes;
+  var savedDevice = await device.save();
+  res.json(savedDevice);
 };
 
 controller.LoginRegister = async (req, res, next) => {

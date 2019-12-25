@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ddb1b755-e95a-4e10-8a99-b64144ebe8c2",
+		"_postman_id": "b3d7327f-11e7-4cd9-9f94-a7da474b27a8",
 		"name": "iot-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -145,7 +145,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/devices/5c1fd30634a3bd28448284c8",
+					"raw": "http://localhost:8000/api/devices/5c27b2826ef018378057171a",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -154,7 +154,7 @@
 					"path": [
 						"api",
 						"devices",
-						"5c1fd30634a3bd28448284c8"
+						"5c27b2826ef018378057171a"
 					]
 				}
 			},
@@ -175,7 +175,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/devices/5c1fa3aa0841ed4758e71df7",
+					"raw": "http://localhost:8000/api/devices/5c1fd30634a3bd28448284c8",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -184,7 +184,7 @@
 					"path": [
 						"api",
 						"devices",
-						"5c1fa3aa0841ed4758e71df7"
+						"5c1fd30634a3bd28448284c8"
 					]
 				}
 			},
@@ -208,7 +208,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/data/5c16a8b8216c0f2114582126",
+					"raw": "http://localhost:8000/api/data/5c50e83a7a960535541961a9",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -217,7 +217,7 @@
 					"path": [
 						"api",
 						"data",
-						"5c16a8b8216c0f2114582126"
+						"5c50e83a7a960535541961a9"
 					]
 				}
 			},
@@ -235,7 +235,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"device\":\"5c1fa3aa0841ed4758e71df7\",\r\n\t\"dataItem\" : {\r\n\t\t\"dataValue\" : 2,\r\n\t\t\"dataType\" : \"LIGHT SENSOR\"\r\n\t}\r\n}"
+					"raw": "{\r\n\t\"device\":\"5dd06303a751b400ec892be6\",\r\n\t\"dataItem\" : {\r\n\t\t\"dataValue\" : 3.3,\r\n\t\t\"dataType\" : \"LIGHT_SENSOR\"\r\n\t},\r\n\t\"created\": \"2019-01-24T20:14:42.702Z\"\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/data",
@@ -253,7 +253,7 @@
 			"response": []
 		},
 		{
-			"name": "data?deviceId",
+			"name": "data?deviceId&pageSize&period&dataType",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -270,7 +270,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/data?deviceId=5c1fd30634a3bd28448284c8",
+					"raw": "http://localhost:8000/api/data?deviceId=5dd18fbaa720530988d2ffb7&pageSize=10&period=lastHour&dataType=humidity",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -283,7 +283,19 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5c1fd30634a3bd28448284c8"
+							"value": "5dd18fbaa720530988d2ffb7"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						},
+						{
+							"key": "period",
+							"value": "lastHour"
+						},
+						{
+							"key": "dataType",
+							"value": "humidity"
 						}
 					]
 				}
@@ -343,7 +355,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command?deviceId=5c1fd30634a3bd28448284c8",
+					"raw": "http://localhost:8000/api/command?deviceId=5c27b2826ef018378057171a",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -356,7 +368,7 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5c1fd30634a3bd28448284c8"
+							"value": "5c27b2826ef018378057171a"
 						}
 					]
 				}
@@ -443,7 +455,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command/notExecuted/5c1fd30634a3bd28448284c8",
+					"raw": "http://localhost:8000/api/command/notExecuted/5c27b2826ef018378057171a",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -453,7 +465,7 @@
 						"api",
 						"command",
 						"notExecuted",
-						"5c1fd30634a3bd28448284c8"
+						"5c27b2826ef018378057171a"
 					]
 				}
 			},
@@ -471,10 +483,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\n        \"executed\": true,\n        \"commandId\": \"5c1645a8c9c34634442c86a7\"\n    }"
+					"raw": "    {\n        \"executed\": true,\n        \"commandId\": \"5c451683c325db031871c69d\"\n    }"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command/notExecuted/5c1fd30634a3bd28448284c8",
+					"raw": "http://localhost:8000/api/command/notExecuted/5c155d5abea777461420387a",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -484,7 +496,7 @@
 						"api",
 						"command",
 						"notExecuted",
-						"5c1fd30634a3bd28448284c8"
+						"5c155d5abea777461420387a"
 					]
 				}
 			},
@@ -495,10 +507,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "http://localhost:8000/api/command/GetGoogleCertificate/Thumbprint",
 					"protocol": "http",
@@ -553,6 +561,101 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "modifyTTNInfo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"_id\": \"5dd18fcfa720530988d2ffb8\",\n    \"ttnInfo\": {\n        \"dev_id\": \"RRRRR\",\n        \"app_id\": \"QQQQQ\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices/modifyTtnInfo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices",
+						"modifyTtnInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ttnDevices",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/ttnDevices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ttnDevices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ttnDevices/id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/ttnDevices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ttnDevices"
+					]
+				}
+			},
+			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

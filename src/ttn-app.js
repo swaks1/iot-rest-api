@@ -15,7 +15,6 @@ export const startTTN = async () => {
 
   // mqqt client
   dataClient = await DataTTN(appID, accessKey);
-
   dataClient.on("uplink", function(devID, payload) {
     logger.log(devID, payload);
     saveData(devID, payload);
@@ -23,7 +22,6 @@ export const startTTN = async () => {
 
   // application manager client
   applicationClient = await AppTTN(appID, accessKey);
-
   euis = await applicationClient.getEUIs();
   const app = await applicationClient.get();
   logger.log("Got app", app);

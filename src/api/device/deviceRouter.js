@@ -17,6 +17,7 @@ router
   .put(controller.putById)
   .delete(controller.deleteById);
 
+router.route("/reloadDataTypes").post(controller.reloadDataTypes);
 router.route("/LogIn").post(controller.LoginRegister);
 router.route("/modifyTTNInfo").post(controller.modifyTTNInfo);
 
