@@ -98,6 +98,36 @@
 			"response": []
 		},
 		{
+			"name": "devices/reloadDataTypes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"deviceId\": \"5dd0630aa751b400ec892be7\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/devices/reloadDataTypes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"devices",
+						"reloadDataTypes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "devices/id",
 			"request": {
 				"method": "PUT",
