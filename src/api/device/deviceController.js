@@ -148,8 +148,12 @@ controller.modifyTTNInfo = async (req, res, next) => {
     logger.log("device not found --> " + reqDevice._id);
     res.status(400).send("Device Not Found");
   } else {
-    existingDevice.ttnInfo.app_id = reqDevice.ttnInfo.app_id;
-    existingDevice.ttnInfo.dev_id = reqDevice.ttnInfo.dev_id;
+    if (reqDevice.ttnInfo) {
+      existingDevice.ttnInfo.app_id = reqDevice.ttnInfo.app_id;
+      existingDevice.ttnInfo.dev_id = reqDevice.ttnInfo.dev_id;
+    } else {
+      existingDevice.ttnInfo = null;
+    }
 
     var result = await existingDevice.save().catch(err => next(err));
     return res.json(result);
