@@ -5,13 +5,13 @@ var controller = {};
 
 // like middleware that will interecept routes with :id
 controller.param = async (req, res, next, id) => {
-  var ttnDevice = await ttnApplicationAPI.getDevice(id).catch(err => next(err));
-  if (!ttnDevice) {
-    next(new Error("No TTN device with that id.."));
-  } else {
-    req.device = ttnDevice;
-    next();
-  }
+  ttnApplicationAPI
+    .getDevice(id)
+    .then(ttnDevice => {
+      req.device = ttnDevice;
+      next();
+    })
+    .catch(err => next(err));
 };
 
 controller.get = async (req, res, next) => {
@@ -19,20 +19,49 @@ controller.get = async (req, res, next) => {
   if (ttnDevices) res.json(ttnDevices);
 };
 
-// controller.post = async (req, res, next) => {
-//   var newDevice = req.body;
+controller.post = async (req, res, next) => {
+  let device = req.body;
 
-//   await Device.create(newDevice).then(
-//     device => {
-//       res.json(device);
-//     },
-//     err => next(err)
-//   );
-// };
+  try {
+    var existingDevice = await ttnApplicationAPI.getDevice(device.devId);
+    if (existingDevice) {
+      res.status(400).send("Device already exists !");
+      return;
+    }
+  } catch (error) {
+    logger.log(error);
+  }
+
+  try {
+    await ttnApplicationAPI.saveDevice(device);
+  } catch (error) {
+    res.status(400).send(error.details);
+    return;
+  }
+
+  ttnApplicationAPI
+    .getDevice(device.devId)
+    .then(savedDevice => {
+      res.json(savedDevice);
+    })
+    .catch(err => next(err));
+};
 
 controller.getById = async (req, res, next) => {
   var device = req.device; // taken from controller.params method
   res.json(device);
+};
+
+controller.deleteById = (req, res, next) => {
+  var device = req.device;
+
+  ttnApplicationAPI
+    .deleteDevice(device.devId)
+    .then(item => {
+      console.log(item);
+      res.status(200).send(`Successfuly deleted ${device.devId}`);
+    })
+    .catch(err => next(err));
 };
 
 // controller.putById = async (req, res, next) => {
@@ -50,17 +79,6 @@ controller.getById = async (req, res, next) => {
 //       next(err);
 //     } else {
 //       res.json(saved);
-//     }
-//   });
-// };
-
-// controller.deleteById = (req, res, next) => {
-//   var device = req.device;
-//   device.remove((err, removed) => {
-//     if (err) {
-//       next(err);
-//     } else {
-//       res.json(removed);
 //     }
 //   });
 // };

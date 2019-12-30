@@ -98,7 +98,7 @@ ttnApplicationMethods.saveDevice = async ttnDevice => {
   });
 };
 
-ttnApplicationMethods.DeleteDevice = async devId => {
+ttnApplicationMethods.deleteDevice = async devId => {
   return applicationClient.deleteDevice(devId);
 };
 
