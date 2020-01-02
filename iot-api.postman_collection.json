@@ -685,6 +685,65 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "ttnDevices/id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/ttnDevices/tesss",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ttnDevices",
+						"tesss"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ttnDevices/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"devId\":\"12dsadsa\",\n\t\"description\": \"122234\",\n\t\"activation\": \"ABP\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/ttnDevices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ttnDevices"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
