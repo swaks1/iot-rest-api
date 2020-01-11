@@ -58,8 +58,16 @@ controller.deleteById = (req, res, next) => {
   ttnApplicationAPI
     .deleteDevice(device.devId)
     .then(item => {
-      console.log(item);
       res.status(200).send(`Successfuly deleted ${device.devId}`);
+    })
+    .catch(err => next(err));
+};
+
+controller.getApplicationInfo = (req, res, next) => {
+  ttnApplicationAPI
+    .getApplicationInfo()
+    .then(ttnAppinfo => {
+      res.json(ttnAppinfo);
     })
     .catch(err => next(err));
 };

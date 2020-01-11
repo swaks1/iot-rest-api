@@ -25,6 +25,7 @@ export const startTTN = async () => {
   euis = await applicationClient.getEUIs();
   const app = await applicationClient.get();
   logger.log("Got app", app);
+  logger.log("Got euis", euis);
 
   // var obj = {
   //   app_id: "lorawan_test_app",
@@ -76,6 +77,10 @@ var saveData = async (devID, payload) => {
 };
 
 var ttnApplicationMethods = {};
+
+ttnApplicationMethods.getApplicationInfo = async () => {
+  return applicationClient.get();
+};
 
 ttnApplicationMethods.getDevices = async () => {
   return applicationClient.devices();

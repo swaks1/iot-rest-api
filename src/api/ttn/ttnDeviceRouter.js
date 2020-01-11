@@ -17,4 +17,6 @@ router
   .delete(controller.deleteById);
 // .put(controller.putById)
 
+router.route("/application/info").get(controller.getApplicationInfo);
+
 export default router;

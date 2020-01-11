@@ -655,6 +655,40 @@
 			"response": []
 		},
 		{
+			"name": "ttnDevices/applicaiton/info",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/ttnDevices/application/info",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ttnDevices",
+						"application",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "ttnDevices/id",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
