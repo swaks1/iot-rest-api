@@ -28,8 +28,8 @@ export const startTTN = async () => {
   logger.log("Got euis", euis);
 
   // var obj = {
-  //   app_id: "lorawan_test_app",
-  //   dev_id: "lora32u4-abp",
+  //   appId: "lorawan_test_app",
+  //   devId: "lora32u4-abp",
   //   hardware_serial: "A1073293F71AED46",
   //   port: 1,
   //   counter: 19,
@@ -48,7 +48,7 @@ export const startTTN = async () => {
 
 var saveData = async (devID, payload) => {
   var existingDevice = await Device.findOne({
-    "ttnInfo.dev_id": payload.dev_id
+    "ttnInfo.devId": payload.devId
   })
     .lean()
     .exec();

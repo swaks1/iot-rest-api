@@ -604,7 +604,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"_id\": \"5dd18fcfa720530988d2ffb8\",\n    \"ttnInfo\": {\n        \"dev_id\": \"RRRRR\",\n        \"app_id\": \"QQQQQ\"\n    }\n}"
+					"raw": "{\n    \"_id\": \"5dd18fcfa720530988d2ffb8\",\n    \"ttnInfo\": {\n        \"devId\": \"RRRRR\",\n        \"appId\": \"QQQQQ\"\n    }\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/devices/modifyTtnInfo",

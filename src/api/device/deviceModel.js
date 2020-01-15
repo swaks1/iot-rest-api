@@ -27,8 +27,8 @@ var DeviceSchema = new Schema({
   isAddedToDashboard: { type: Boolean, default: false },
   dataTypes: Array,
   ttnInfo: {
-    app_id: String,
-    dev_id: String
+    appId: String,
+    devId: String
   }
 });
 
