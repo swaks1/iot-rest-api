@@ -2,6 +2,8 @@ import Command from "./commandModel";
 import Device from "./../device/deviceModel";
 import logger from "./../../utils/logger";
 import helper from "./../../utils/helper";
+import { CHANNEL } from "./../../utils/constants";
+import { ttnDataAPI } from "../../ttn-app";
 // import _ from "lodash";
 
 var controller = {};
@@ -28,18 +30,16 @@ controller.get = async (req, res, next) => {
 };
 
 controller.post = async (req, res, next) => {
-  var newData = req.body;
-  if (newData.create) {
-    newData.created = new Date(newData.created);
+  var command = req.body;
+  if (command.created) {
+    command.created = new Date(command.created);
   }
 
-  await Command.create(newData).then(
-    item => {
-      let itemObj = helper.fixDates(item, "created");
-      res.send(itemObj);
-    },
-    err => next(err)
-  );
+  if (command.channel.toLowerCase() == CHANNEL.LORAWAN.toLocaleLowerCase()) {
+    saveLoraWANCommand(command, res, next);
+  } else {
+    saveWiFiCommand(command, res, next);
+  }
 };
 
 controller.getById = async (req, res, next) => {
@@ -65,7 +65,11 @@ controller.getNotExecutedCommand = async (req, res, next) => {
   if (!deviceId) {
     res.send("add device id");
   } else {
-    await Command.find({ device: deviceId, executed: false })
+    await Command.find({
+      device: deviceId,
+      executed: false,
+      channel: CHANNEL.WIFI
+    })
       // .populate('device')
       .sort({ created: "asc" })
       .exec()
@@ -164,4 +168,57 @@ controller.getGoogleApiCert = (req, res, next) => {
   res.json(data);
 };
 
+const saveLoraWANCommand = (command, res, next) => {
+  Device.findById(command.device)
+    .exec()
+    .then(iotDevice => {
+      if (!iotDevice || !iotDevice.ttnInfo || !iotDevice.ttnInfo.devId) {
+        res.status(400).send("TTN DeviceID not found !!");
+        return;
+      }
+      Command.find({ channel: CHANNEL.LORAWAN })
+        .sort({ created: -1 })
+        .limit(1)
+        .exec()
+        .then(result => {
+          let pseudoId = 1;
+          let lastCommand = result.length > 0 ? result[0] : null;
+          if (
+            lastCommand &&
+            lastCommand.pseudoId &&
+            lastCommand.pseudoId < 255
+          ) {
+            pseudoId = lastCommand.pseudoId + 1;
+          }
+          command.channel = CHANNEL.LORAWAN;
+          command.pseudoId = pseudoId;
+
+          ttnDataAPI
+            .sendUplink(iotDevice.ttnInfo.devId, [
+              command.commandItem.commandValue
+            ])
+            .then(() => {
+              Command.create(command)
+                .then(item => {
+                  let itemObj = helper.fixDates(item, "created");
+                  res.send(itemObj);
+                })
+                .catch(err => next(err));
+            })
+            .catch(err => next(err));
+        })
+        .catch(err => next(err));
+    })
+    .catch(err => next(err));
+};
+
+const saveWiFiCommand = (command, res, next) => {
+  command.channel = CHANNEL.WIFI;
+  Command.create(command)
+    .then(item => {
+      let itemObj = helper.fixDates(item, "created");
+      res.send(itemObj);
+    })
+    .catch(err => next(err));
+};
 export default controller;

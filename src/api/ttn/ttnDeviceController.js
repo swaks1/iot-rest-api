@@ -1,5 +1,5 @@
 import logger from "../../utils/logger";
-import { ttnApplicationAPI, ttnDataAPI } from "../../ttn-app";
+import { ttnApplicationAPI } from "../../ttn-app";
 
 var controller = {};
 

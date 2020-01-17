@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { CHANNEL } from "../../utils/constants";
 var Schema = mongoose.Schema;
 
 var CommandSchema = new Schema(
@@ -20,6 +20,14 @@ var CommandSchema = new Schema(
     executed: {
       type: Boolean,
       default: false
+    },
+    channel: {
+      type: String,
+      default: CHANNEL.WIFI
+    },
+    pseudoId: {
+      type: Number,
+      default: null
     }
   },
   { timestamps: true }
