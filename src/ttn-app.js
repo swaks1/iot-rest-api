@@ -4,6 +4,7 @@ import helper from "./utils/helper";
 import { data as DataTTN, application as AppTTN, key } from "ttn";
 import Device from "./api/device/deviceModel";
 import Data from "./api/data/dataModel";
+import Command from "./api/command/commandModel";
 
 var dataClient = null;
 var applicationClient = null;
@@ -48,34 +49,64 @@ export const startTTN = async () => {
 
 var saveData = async (devID, payload) => {
   var existingDevice = await Device.findOne({
-    "ttnInfo.devId": payload.devId
+    "ttnInfo.devId": payload.dev_id
   })
     .lean()
     .exec();
 
   if (existingDevice != null) {
     logger.log(payload.payload_fields);
-    var data = [];
-
-    for (let property in payload.payload_fields) {
-      var newData = {
-        device: existingDevice._id,
-        dataItem: {
-          dataType: property,
-          dataValue: payload.payload_fields[property]
-        },
-        communicationMedium: "LORA",
-        created: payload.metadata.time
-      };
-      data.push(newData);
+    let data = getDataFromPayload(payload, existingDevice);
+    let command = payload.payload_fields.command;
+    try {
+      if (data && data.length > 0) await Data.insertMany(data);
+      if (command && command > 0)
+        await updateCommandExecuted(command, existingDevice);
+    } catch (err) {
+      logger.error(err);
     }
-    // logger.log(data);
-    await Data.insertMany(data).catch(err => logger.error(err));
   } else {
     logger.log("Device doesn't exist");
   }
 };
 
+var getDataFromPayload = (payload, existingDevice) => {
+  let data = [];
+  for (let property in payload.payload_fields) {
+    var newData = {
+      device: existingDevice._id,
+      dataItem: {
+        dataType: property,
+        dataValue: payload.payload_fields[property]
+      },
+      channel: "LoraWAN",
+      created: payload.metadata.time
+    };
+    data.push(newData);
+  }
+  return data;
+};
+
+var updateCommandExecuted = async (pseudoId, existingDevice) => {
+  let commands = await Command.find({
+    device: existingDevice._id,
+    pseudoId: pseudoId
+  })
+    .sort({ created: -1 })
+    .exec();
+
+  console.log(commands);
+
+  if (commands && commands.length > 0) {
+    let command = commands[0];
+    command.executed = true;
+    await command.save();
+  }
+};
+
+// ---------------------------------------------------------------
+// ---------------------------------------------------------------
+// ---------------------------------------------------------------
 var ttnApplicationMethods = {};
 
 ttnApplicationMethods.getApplicationInfo = async () => {

@@ -16,7 +16,7 @@ var DataSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  communicationMedium: String
+  channel: String
 });
 
 export default mongoose.model("data", DataSchema);
