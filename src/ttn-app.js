@@ -130,7 +130,8 @@ ttnApplicationMethods.saveDevice = async ttnDevice => {
     devAddr: "2601" + helper.getRandomHexString(4),
     nwkSKey: key(16),
     appSKey: key(16),
-    appKey: key(16)
+    appKey: key(16),
+    disableFCntCheck: true
   });
 };
 

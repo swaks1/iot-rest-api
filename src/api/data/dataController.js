@@ -289,7 +289,7 @@ controller.get = async (req, res, next) => {
                 let localDate = helper.getDate(
                   `${year}-${month}-${day}T${hour}:${minute}:00.000Z`
                 );
-                logger.log(localDate);
+                // logger.log(localDate);
                 return {
                   dataItem: {
                     dataValue: average,
