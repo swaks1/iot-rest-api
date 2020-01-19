@@ -385,7 +385,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command?deviceId=5c27b2826ef018378057171a",
+					"raw": "http://localhost:8000/api/command?deviceId=5dd18fbaa720530988d2ffb7",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -398,7 +398,7 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5c27b2826ef018378057171a"
+							"value": "5dd18fbaa720530988d2ffb7"
 						}
 					]
 				}
@@ -450,7 +450,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"device\":\"5c1fa3aa0841ed4758e71df7\",\r\n\t\"commandItem\" : {\r\n\t\t\"commandValue\" : true,\r\n\t\t\"commandType\" : \"IS_ACTIVE\"\r\n\t}\r\n}"
+					"raw": "{\r\n\t\"device\":\"5dd18fbaa720530988d2ffb7\",\r\n\t\"commandItem\" : {\r\n\t\t\"commandValue\" : 2,\r\n\t\t\"commandType\" : \"IS_ACTIVE\"\r\n\t},\r\n\t\"channel\":\"LoraWAN\"\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/command",
@@ -485,7 +485,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/command/notExecuted/5c27b2826ef018378057171a",
+					"raw": "http://localhost:8000/api/command/notExecuted/5dd18fbaa720530988d2ffb7",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -495,7 +495,7 @@
 						"api",
 						"command",
 						"notExecuted",
-						"5c27b2826ef018378057171a"
+						"5dd18fbaa720530988d2ffb7"
 					]
 				}
 			},
