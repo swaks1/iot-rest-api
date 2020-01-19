@@ -555,7 +555,7 @@
 			"response": []
 		},
 		{
-			"name": "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDB7fycP8ggQS7USqnAnnuJ9lZVXVg0WgM",
+			"name": "https://www.googleapis.com/geolocation/v1/geolocate?key=",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -570,7 +570,7 @@
 					"raw": "{\r\n  \"considerIp\": \"false\",\r\n  \"wifiAccessPoints\": [\r\n\t{\"macAddress\":\"08:95:2A:5C:75:06\",\"signalStrength\":-79,\"channel\":1},\r\n\t{\"macAddress\":\"26:0D:C2:8D:40:71\",\"signalStrength\":-88,\"channel\":1},\r\n\t{\"macAddress\":\"BC:05:43:52:31:F0\",\"signalStrength\":-83,\"channel\":1},\r\n\t{\"macAddress\":\"C8:3A:35:ED:1B:B8\",\"signalStrength\":-89,\"channel\":1}\r\n  ]\r\n}"
 				},
 				"url": {
-					"raw": "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDB7fycP8ggQS7USqnAnnuJ9lZVXVg0WgM",
+					"raw": "https://www.googleapis.com/geolocation/v1/geolocate?key=",
 					"protocol": "https",
 					"host": [
 						"www",
@@ -585,7 +585,7 @@
 					"query": [
 						{
 							"key": "key",
-							"value": "AIzaSyDB7fycP8ggQS7USqnAnnuJ9lZVXVg0WgM"
+							"value": ""
 						}
 					]
 				}
