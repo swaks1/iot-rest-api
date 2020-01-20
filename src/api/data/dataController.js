@@ -305,6 +305,93 @@ controller.get = async (req, res, next) => {
           }
         );
         break;
+      case "last24h": // return only those in last 24h
+        match["created"] = { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24) }; // only those in last hour
+        Data.aggregate(
+          [
+            {
+              $match: match
+            },
+            {
+              $addFields: {
+                dataValueDecimal: {
+                  $convert: {
+                    input: "$dataItem.dataValue",
+                    to: "decimal",
+                    onError: "Error",
+                    onNull: 0
+                  }
+                }
+              }
+            },
+            {
+              $group: {
+                _id: {
+                  year: { $year: "$created" },
+                  month: { $month: "$created" },
+                  day: { $dayOfMonth: "$created" },
+                  hour: { $hour: "$created" }
+                },
+                average: { $avg: "$dataValueDecimal" }
+              }
+            },
+            {
+              $sort: {
+                "_id.year": -1,
+                "_id.month": -1,
+                "_id.day": -1,
+                "_id.hour": -1
+              }
+            },
+            {
+              $limit: pageSize
+            }
+          ],
+          function(error, data) {
+            if (error) {
+              next(error);
+            } else {
+              var mappedData = data.map((item, index) => {
+                let obj = JSON.parse(
+                  JSON.stringify(item.average).replace("$", "")
+                ); // the average is object that canot be accesed....
+                let average = obj.numberDecimal;
+
+                let year = item._id.year;
+                let month = item._id.month;
+                let day = item._id.day;
+                let hour = item._id.hour;
+                let minute = "00";
+
+                if (month.toString().length == 1) {
+                  month = "0" + month;
+                }
+                if (day.toString().length == 1) {
+                  day = "0" + day;
+                }
+                if (hour.toString().length == 1) {
+                  hour = "0" + hour;
+                }
+
+                let localDate = helper.getDate(
+                  `${year}-${month}-${day}T${hour}:${minute}:00.000Z`
+                );
+                // logger.log(localDate);
+                return {
+                  dataItem: {
+                    dataValue: average,
+                    dataType: dataType
+                  },
+                  _id: `data${index}`,
+                  device: deviceId,
+                  created: localDate.substring(0, 16)
+                };
+              });
+              res.json(mappedData);
+            }
+          }
+        );
+        break;
       default:
         // or period=mostRecent...return most recent data
         var query = {};
