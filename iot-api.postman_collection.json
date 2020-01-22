@@ -300,7 +300,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/data?deviceId=5dd18fbaa720530988d2ffb7&pageSize=10&period=lastHour&dataType=humidity",
+					"raw": "http://localhost:8000/api/data?deviceId=5dd0630aa751b400ec892be7&pageSize=10&period=lastHour&dataType=humidity",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -313,7 +313,7 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5dd18fbaa720530988d2ffb7"
+							"value": "5dd0630aa751b400ec892be7"
 						},
 						{
 							"key": "pageSize",
@@ -555,7 +555,7 @@
 			"response": []
 		},
 		{
-			"name": "https://www.googleapis.com/geolocation/v1/geolocate?key=",
+			"name": "https://www.googleapis.com/geolocation/v1/geolocate?key=INSERT_HERE",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -570,7 +570,7 @@
 					"raw": "{\r\n  \"considerIp\": \"false\",\r\n  \"wifiAccessPoints\": [\r\n\t{\"macAddress\":\"08:95:2A:5C:75:06\",\"signalStrength\":-79,\"channel\":1},\r\n\t{\"macAddress\":\"26:0D:C2:8D:40:71\",\"signalStrength\":-88,\"channel\":1},\r\n\t{\"macAddress\":\"BC:05:43:52:31:F0\",\"signalStrength\":-83,\"channel\":1},\r\n\t{\"macAddress\":\"C8:3A:35:ED:1B:B8\",\"signalStrength\":-89,\"channel\":1}\r\n  ]\r\n}"
 				},
 				"url": {
-					"raw": "https://www.googleapis.com/geolocation/v1/geolocate?key=",
+					"raw": "https://www.googleapis.com/geolocation/v1/geolocate?key=INSERT_HERE",
 					"protocol": "https",
 					"host": [
 						"www",
@@ -585,7 +585,7 @@
 					"query": [
 						{
 							"key": "key",
-							"value": ""
+							"value": "INSERT_HERE"
 						}
 					]
 				}
@@ -706,7 +706,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/ttnDevices",
+					"raw": "http://localhost:8000/api/ttnDevices/534",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -714,7 +714,8 @@
 					"port": "8000",
 					"path": [
 						"api",
-						"ttnDevices"
+						"ttnDevices",
+						"534"
 					]
 				}
 			},

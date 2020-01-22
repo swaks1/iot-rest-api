@@ -1,0 +1,140 @@
+{
+	"info": {
+		"_postman_id": "dbe77004-7a61-4ed2-972e-5035c7fa8e1f",
+		"name": "TTN",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get App",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "Key ttn-account-v2.BleP1h8XA7PtLAgjf0HUiMqbAZVNGvqfS5NKDW41icI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://eu.thethings.network:8084/applications/lorawan_test_app",
+					"protocol": "http",
+					"host": [
+						"eu",
+						"thethings",
+						"network"
+					],
+					"port": "8084",
+					"path": [
+						"applications",
+						"lorawan_test_app"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Device",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "Key ttn-account-v2.BleP1h8XA7PtLAgjf0HUiMqbAZVNGvqfS5NKDW41icI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://eu.thethings.network:8084/applications/lorawan_test_app/devices/home_device",
+					"protocol": "http",
+					"host": [
+						"eu",
+						"thethings",
+						"network"
+					],
+					"port": "8084",
+					"path": [
+						"applications",
+						"lorawan_test_app",
+						"devices",
+						"home_device"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new Device",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "Key ttn-account-v2.BleP1h8XA7PtLAgjf0HUiMqbAZVNGvqfS5NKDW41icI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"altitude\": 0,\r\n  \"app_id\": \"lorawan_test_app\",\r\n  \"attributes\": {\r\n    \"key\": \"\",\r\n    \"value\": \"\"\r\n  },\r\n  \"description\": \"Some description of the device\",\r\n  \"dev_id\": \"riste_dev_id_1\",\r\n  \"latitude\": 52.375,\r\n  \"longitude\": 4.887,\r\n  \"lorawan_device\": {\r\n    \"activation_constraints\": \"abp\",\r\n    \"app_eui\": \"77f73eedead98ebe\",\r\n    \"app_id\": \"lorawan_test_app\",\r\n    \"app_key\": \"ca150edc57d947b9b7f2c257d19dd7cd\",\r\n    \"app_s_key\": \"aec8a72708cc4743a5a0ef792076d819\",\r\n    \"dev_addr\": \"26011610\",\r\n    \"dev_eui\": \"0f02a7a68230ae7a\",\r\n    \"dev_id\": \"riste_dev_id_1\",\r\n    \"disable_f_cnt_check\": false,\r\n    \"f_cnt_down\": 0,\r\n    \"f_cnt_up\": 0,\r\n    \"last_seen\": 0,\r\n    \"nwk_s_key\": \"7845df89b1b44a7bb1da7feac28d8058\",\r\n    \"uses32_bit_f_cnt\": true\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://eu.thethings.network:8084/applications/lorawan_test_app/devices",
+					"protocol": "http",
+					"host": [
+						"eu",
+						"thethings",
+						"network"
+					],
+					"port": "8084",
+					"path": [
+						"applications",
+						"lorawan_test_app",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
