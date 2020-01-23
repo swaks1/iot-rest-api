@@ -306,7 +306,7 @@ controller.get = async (req, res, next) => {
         );
         break;
       case "last24h": // return only those in last 24h
-        match["created"] = { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24) }; // only those in last hour
+        match["created"] = { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24) }; // only those in last 24 hour
         Data.aggregate(
           [
             {
@@ -445,6 +445,56 @@ controller.getById = (req, res, next) => {
   var dataItem = req.dataItem;
   var dataItemObj = helper.fixDates(dataItem, "created");
   res.json(dataItemObj);
+};
+
+controller.getForEachDevice = async (req, res, next) => {
+  let { devices, dataTypes, period } = req.body;
+
+  if (!period) period = 24; // 24 hours
+
+  if (!Array.isArray(devices) || !Array.isArray(dataTypes)) {
+    res.status(400).send("Invalid devices or dataTypes propery");
+    return;
+  }
+
+  var result = [];
+  var query = {};
+  query["created"] = { $gt: new Date(Date.now() - 1000 * 60 * 60 * period) }; // only data in last 'period' hours
+
+  for (let deviceId of devices) {
+    let device = {
+      id: deviceId,
+      data: []
+    };
+    for (let dataType of dataTypes) {
+      query["device"] = deviceId;
+      query["dataItem.dataType"] = dataType;
+      try {
+        let dataResults = await Data.find(query)
+          .limit(1)
+          .sort({ created: -1 })
+          .lean()
+          .exec();
+        let dataResult = dataResults[0];
+        let created = null;
+        let dataValue = null;
+        if (dataResult && dataResult.dataItem) {
+          created = dataResult.created;
+          dataValue = dataResult.dataItem.dataValue;
+        }
+        device.data.push({
+          dataType: dataType,
+          dataValue: dataValue,
+          created: created
+        });
+      } catch (error) {
+        next(error);
+        return;
+      }
+    }
+    result.push(device);
+  }
+  res.json(result);
 };
 
 export default controller;

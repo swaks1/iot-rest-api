@@ -313,6 +313,36 @@
 			"response": []
 		},
 		{
+			"name": "data/ getForEachDevice",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"devices\":[\"5dd0630aa751b400ec892be7\",\"5e28a479b42bb82b24788b06\"],\r\n\t\"dataTypes\": [\"temperature\",\"humidity\"],\r\n\t\"period\":24\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/data/getForEachDevice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"data",
+						"getForEachDevice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "data?deviceId&pageSize&period&dataType",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true

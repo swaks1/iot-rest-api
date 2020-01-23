@@ -13,5 +13,6 @@ router
   .delete(controller.delete);
 
 router.route("/:id").get(controller.getById);
+router.route("/getForEachDevice").post(controller.getForEachDevice);
 
 export default router;
