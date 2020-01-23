@@ -8,7 +8,7 @@
 const char *ssid = "Poposki";
 const char *wifi_password = "10denari";
 
-const char *DEVICE_NAME = "forthDevice";
+const char *DEVICE_NAME = "seconddevice";
 const char *DEVICE_PASSWORD = "123456";
 const char *DEVICE_DESCRIPTION = "Opis za device";
 
@@ -26,11 +26,11 @@ double accuracy = 0.0;
 
 //192.168.100.h8
 //192.168.43.m188
-String LOG_IN_ROUTE = "http://192.168.100.8:8000/api/devices/LogIn";
-String DATA_ROUTE = "http://192.168.100.8:8000/api/data";
-String CHECK_COMMAND_ROUTE = "http://192.168.100.8:8000/api/command/notExecuted/"; //DEVICE_ID to be added
-String DEVICE_INFO_ROUTE = "http://192.168.100.8:8000/api/devices/";               //DEVICE_ID to be added
-String GOOGLE_CERTIFICATE_ROUTE = "http://192.168.100.8:8000/api/command/GetGoogleCertificate/Thumbprint";
+String LOG_IN_ROUTE = "http://192.168.100.5:8000/api/devices/LogIn";
+String DATA_ROUTE = "http://192.168.100.5:8000/api/data";
+String CHECK_COMMAND_ROUTE = "http://192.168.100.5:8000/api/command/notExecuted/"; //DEVICE_ID to be added
+String DEVICE_INFO_ROUTE = "http://192.168.100.5:8000/api/devices/";               //DEVICE_ID to be added
+String GOOGLE_CERTIFICATE_ROUTE = "http://192.168.100.5:8000/api/command/GetGoogleCertificate/Thumbprint";
 
 unsigned long commandCheckDelay = 10000; //10seconds
 unsigned long lastCommandCheckTime;
@@ -61,11 +61,11 @@ void setup()
 
 void loop()
 {
-  int sensorValue = analogRead(A0);             // read the input on analog pin 0
-  float voltage = sensorValue * (3.3 / 1023.0); // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 3.3V)
+  //int sensorValue = analogRead(A0);             // read the input on analog pin 0
+  //float voltage = sensorValue * (3.3 / 1023.0); // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 3.3V)
 
   //send data to server
-  SendSensorValue(voltage);
+  //SendSensorValue(voltage);
 
   //send random data to server
   SendRandomValue();

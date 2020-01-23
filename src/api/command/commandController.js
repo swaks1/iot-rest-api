@@ -176,7 +176,7 @@ const saveLoraWANCommand = (command, res, next) => {
         res.status(400).send("TTN DeviceID not found !!");
         return;
       }
-      Command.find({ channel: CHANNEL.LORAWAN })
+      Command.find({ channel: CHANNEL.LORAWAN, device: command.device })
         .sort({ created: -1 })
         .limit(1)
         .exec()
@@ -195,6 +195,7 @@ const saveLoraWANCommand = (command, res, next) => {
 
           ttnDataAPI
             .sendUplink(iotDevice.ttnInfo.devId, [
+              pseudoId,
               command.commandItem.commandValue
             ])
             .then(() => {

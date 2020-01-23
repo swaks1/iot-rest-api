@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { CHANNEL } from "../../utils/constants";
 
 var Schema = mongoose.Schema;
 
@@ -16,7 +17,10 @@ var DataSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  channel: String
+  channel: {
+    type: String,
+    default: CHANNEL.WIFI
+  }
 });
 
 export default mongoose.model("data", DataSchema);
