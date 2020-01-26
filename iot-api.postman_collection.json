@@ -615,7 +615,7 @@
 			"response": []
 		},
 		{
-			"name": "settings/",
+			"name": "summaryDashboard/",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -632,7 +632,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/settings",
+					"raw": "http://localhost:8000/api/summaryDashboard",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -640,14 +640,14 @@
 					"port": "8000",
 					"path": [
 						"api",
-						"settings"
+						"summaryDashboard"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "settings/name",
+			"name": "summaryDashboard/name",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -664,7 +664,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/settings/beehiveDashboard",
+					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -672,7 +672,7 @@
 					"port": "8000",
 					"path": [
 						"api",
-						"settings",
+						"summaryDashboard",
 						"beehiveDashboard"
 					]
 				}
@@ -680,7 +680,7 @@
 			"response": []
 		},
 		{
-			"name": "settings/",
+			"name": "summaryDashboard/",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -691,10 +691,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"beehiveDashboard\",\n    \"value\": {\n        \"test\": \"dasdasd\",\n        \"osFrog\":{\n        \t\"test2\":\"DADA\"\n        }\n    }\n}"
+					"raw": "{\n    \"name\": \"beehiveDashboard\",\n    \"value\": {\n        \"devices\": [\"dasdasd\"],\n        \"dataTypes\":[\n\t\t      {\n\t\t        \"name\":\"\",\n\t\t        \"minValue\":0,\n\t\t        \"maxValue\":10\n\t\t\t      }\n    \t\t]\n    }\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/settings",
+					"raw": "http://localhost:8000/api/summaryDashboard",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -702,14 +702,14 @@
 					"port": "8000",
 					"path": [
 						"api",
-						"settings"
+						"summaryDashboard"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "settings/name",
+			"name": "summaryDashboard/name",
 			"request": {
 				"method": "DELETE",
 				"header": [
@@ -723,7 +723,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/settings/beehiveDashboard",
+					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -731,7 +731,7 @@
 					"port": "8000",
 					"path": [
 						"api",
-						"settings",
+						"summaryDashboard",
 						"beehiveDashboard"
 					]
 				}
@@ -739,7 +739,38 @@
 			"response": []
 		},
 		{
-			"name": "settings/name",
+			"name": "summaryDashboard/:name/updateDevices",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"devices\":[\"2221111\",\"222\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard/updateDevices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"summaryDashboard",
+						"beehiveDashboard",
+						"updateDevices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "summaryDashboard/name",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -750,10 +781,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"beehiveDashbosard\",\n    \"value\": {\n    \t\"test\":\"1111\",\n    \t\"test2\":\"2222\"\n    }\n    \n}"
+					"raw": "{\n    \"name\": \"beehiveDashbosard\",\n    \"value\": {\n    \"devices\":[\"TESS\"], \n    \"dataTypes\":[\n      {\n        \"name\":\"a\",\n        \"minValue\":0,\n        \"maxValue\":10\n      },\n    {\n        \"name\":\"b\",\n        \"minValue\":11,\n        \"maxValue\":120\n      }\n    ]\n    }\n    \n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/settings/beehiveDashboard",
+					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -761,7 +792,7 @@
 					"port": "8000",
 					"path": [
 						"api",
-						"settings",
+						"summaryDashboard",
 						"beehiveDashboard"
 					]
 				}
@@ -959,38 +990,6 @@
 					"path": [
 						"api",
 						"ttnDevices"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "settings/name Copy",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/settings",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"settings"
 					]
 				}
 			},

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 var Schema = mongoose.Schema;
 
-var SettingsSchema = new Schema({
+var SummaryDashboardSchema = new Schema({
   name: {
     type: String,
     unique: true,
@@ -11,7 +11,7 @@ var SettingsSchema = new Schema({
   value: Object
 });
 
-export default mongoose.model("settings", SettingsSchema);
+export default mongoose.model("summaryDashboard", SummaryDashboardSchema);
 
 /*
 Possible:
@@ -23,7 +23,7 @@ Possible:
       {
         name:"",
         minValue:0,
-        maxValue,10
+        maxValue:10
       }
     ]
   }

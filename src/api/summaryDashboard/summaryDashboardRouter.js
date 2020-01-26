@@ -1,5 +1,5 @@
 import express from "express";
-import controller from "./settingsController";
+import controller from "./summaryDashboardController";
 
 var router = express.Router();
 
@@ -17,6 +17,6 @@ router
   .put(controller.putById)
   .delete(controller.deleteById);
 
-// router.route("/reloadDataTypes").post(controller.reloadDataTypes);
+router.route("/:name/updateDevices").post(controller.updateDevices);
 
 export default router;

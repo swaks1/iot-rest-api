@@ -3,7 +3,7 @@ import deviceRouter from "./device/deviceRouter";
 import ttnDeviceRouter from "./ttn/ttnDeviceRouter";
 import dataRouter from "./data/dataRouter";
 import commandRouter from "./command/commandRouter";
-import settingsRouter from "./settings/settingsRouter";
+import summaryDashboardRouter from "./summaryDashboard/summaryDashboardRouter";
 import userRouter from "./user/user.router";
 
 var router = express.Router();
@@ -13,7 +13,7 @@ router.use("/devices", deviceRouter);
 router.use("/ttnDevices", ttnDeviceRouter);
 router.use("/data", dataRouter);
 router.use("/command", commandRouter);
-router.use("/settings", settingsRouter);
+router.use("/summaryDashboard", summaryDashboardRouter);
 router.use("/user", userRouter);
 
 export default router;
