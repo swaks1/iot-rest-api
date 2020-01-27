@@ -711,6 +711,36 @@
 		{
 			"name": "summaryDashboard/name",
 			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"beehiveDashbosard\",\n    \"value\": {\n    \"devices\":[\"TESS\"], \n    \"dataTypes\":[\n      {\n        \"name\":\"a\",\n        \"minValue\":0,\n        \"maxValue\":10\n      },\n    {\n        \"name\":\"b\",\n        \"minValue\":11,\n        \"maxValue\":120\n      }\n    ]\n    }\n    \n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"summaryDashboard",
+						"beehiveDashboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "summaryDashboard/name",
+			"request": {
 				"method": "DELETE",
 				"header": [
 					{
@@ -770,9 +800,9 @@
 			"response": []
 		},
 		{
-			"name": "summaryDashboard/name",
+			"name": "summaryDashboard/:name/updateDataTypes",
 			"request": {
-				"method": "PUT",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -781,10 +811,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"beehiveDashbosard\",\n    \"value\": {\n    \"devices\":[\"TESS\"], \n    \"dataTypes\":[\n      {\n        \"name\":\"a\",\n        \"minValue\":0,\n        \"maxValue\":10\n      },\n    {\n        \"name\":\"b\",\n        \"minValue\":11,\n        \"maxValue\":120\n      }\n    ]\n    }\n    \n}"
+					"raw": "{\n\t\"dataTypes\":[\n\t\t{\n\t\t\t\"name\":\"temperature\",\n\t\t\t\"minValue\":11,\n\t\t\t\"maxValue\":22\n\t\t},\n\t\t{\n\t\t\t\"name\":\"humidity\",\n\t\t\t\"minValue\":33,\n\t\t\t\"maxValue\":55\n\t\t}\n\t]\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard",
+					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard/updateDataTypes",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -793,7 +823,8 @@
 					"path": [
 						"api",
 						"summaryDashboard",
-						"beehiveDashboard"
+						"beehiveDashboard",
+						"updateDataTypes"
 					]
 				}
 			},

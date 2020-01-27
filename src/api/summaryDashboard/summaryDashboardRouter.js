@@ -18,5 +18,6 @@ router
   .delete(controller.deleteById);
 
 router.route("/:name/updateDevices").post(controller.updateDevices);
+router.route("/:name/updateDataTypes").post(controller.updateDataTypes);
 
 export default router;

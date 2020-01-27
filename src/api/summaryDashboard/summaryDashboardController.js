@@ -87,4 +87,21 @@ controller.updateDevices = async (req, res, next) => {
     .catch(err => next(err));
 };
 
+controller.updateDataTypes = async (req, res, next) => {
+  var currentSummaryDashboard = req.summaryDashboard;
+  var newDataTypes = req.body.dataTypes;
+
+  currentSummaryDashboard.value = {
+    ...currentSummaryDashboard.value,
+    dataTypes: newDataTypes
+  };
+
+  currentSummaryDashboard
+    .save()
+    .then(result => {
+      res.json(result.value.dataTypes);
+    })
+    .catch(err => next(err));
+};
+
 export default controller;
