@@ -18,6 +18,7 @@ Possible:
 {
   name:"beehiveDashboard",
   value:{
+    periodInPast:24,
     devices:[], // ids here
     dataTypes:[
       {

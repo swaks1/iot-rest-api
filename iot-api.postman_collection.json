@@ -324,7 +324,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"devices\":[\"5dd0630aa751b400ec892be7\",\"5e28a479b42bb82b24788b06\"],\r\n\t\"dataTypes\": [\"temperature\",\"humidity\"],\r\n\t\"period\":24\r\n}"
+					"raw": "{\r\n\t\"devices\":[\"5e28a479b42bb82b24788b06\", \"5dd18fbaa720530988d2ffb7\"],\r\n\t\"dataTypes\": [\"light\",\"temperature\"],\r\n\t\"period\":2422\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/data/getForEachDevice",
@@ -763,6 +763,37 @@
 						"api",
 						"summaryDashboard",
 						"beehiveDashboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "summaryDashboard/:name/updatePeriodInPast",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"periodInPast\":25\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/summaryDashboard/beehiveDashboard/updatePeriodInPast",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"summaryDashboard",
+						"beehiveDashboard",
+						"updatePeriodInPast"
 					]
 				}
 			},

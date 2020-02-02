@@ -17,6 +17,7 @@ router
   .put(controller.putById)
   .delete(controller.deleteById);
 
+router.route("/:name/updatePeriodInPast").post(controller.updatePeriodInPast);
 router.route("/:name/updateDevices").post(controller.updateDevices);
 router.route("/:name/updateDataTypes").post(controller.updateDataTypes);
 

@@ -70,6 +70,23 @@ controller.deleteById = (req, res, next) => {
     .catch(err => next(err));
 };
 
+controller.updatePeriodInPast = async (req, res, next) => {
+  var currentSummaryDashboard = req.summaryDashboard;
+  var newPeriodInPast = req.body.periodInPast;
+
+  currentSummaryDashboard.value = {
+    ...currentSummaryDashboard.value,
+    periodInPast: newPeriodInPast
+  };
+
+  currentSummaryDashboard
+    .save()
+    .then(result => {
+      res.json({ periodInPast: result.value.periodInPast });
+    })
+    .catch(err => next(err));
+};
+
 controller.updateDevices = async (req, res, next) => {
   var currentSummaryDashboard = req.summaryDashboard;
   var newDevices = req.body.devices;
