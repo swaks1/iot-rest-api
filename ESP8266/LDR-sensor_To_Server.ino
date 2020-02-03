@@ -3,12 +3,10 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
-
-
 const char *ssid = "Poposki";
 const char *wifi_password = "10denari";
 
-const char *DEVICE_NAME = "seconddevice";
+const char *DEVICE_NAME = "home-device-1";
 const char *DEVICE_PASSWORD = "123456";
 const char *DEVICE_DESCRIPTION = "Opis za device";
 
@@ -141,9 +139,9 @@ void LoginToServer()
           if (root.success())
           {
             DEVICE_ID = root["_id"].as<String>(); // "5c1fa3aa0841ed4758e71df7"
-            IS_ACTIVE = root["isActive"]; 
+            IS_ACTIVE = root["isActive"];
             IS_LOGGED_IN = true;
-            sendDataDelay = root["sendDataDelay"]; 
+            sendDataDelay = root["sendDataDelay"];
           }
           else
           {
@@ -393,9 +391,6 @@ void SendRandomValue()
 
   if (IS_ACTIVE && shouldSendData && WiFi.status() == WL_CONNECTED)
   {
-    long value = random(0, 20);
-    Serial.printf("\n\nr:  %d \n", value); // print out the value
-
     //Object of class HTTPClient
     HTTPClient http;
 
@@ -404,6 +399,8 @@ void SendRandomValue()
     if (http.begin(DATA_ROUTE))
     {
 
+      long value = random(15, 25);
+      Serial.printf("\n\ntemperature:  %d \n", value);    // print out the value
       http.addHeader("Content-Type", "application/json"); //Specify content-type header
 
       //CREATE PYALOAD
@@ -416,7 +413,91 @@ void SendRandomValue()
 
       JsonObject &dataItem = root.createNestedObject("dataItem");
       dataItem["dataValue"] = value;
-      dataItem["dataType"] = "RANDOM_NUMBER";
+      dataItem["dataType"] = "temperature";
+
+      stringVariable = "";
+      root.printTo(stringVariable);
+      //END CREATE PYALOAD
+
+      Serial.printf("http post --SEND_DATA-- for %s \n", DEVICE_ID.c_str());
+      // start connection and send HTTP header
+      int httpCode = http.POST(stringVariable);
+
+      if (httpCode > 0)
+      {
+        Serial.printf("http post --SEND_DATA-- SUCCESSFULL ... Code: %d \t payload: %s \n", httpCode, http.getString().c_str());
+      }
+      else
+      {
+        Serial.printf("http post --SEND_DATA-- FAILED !!! : %s\n", http.errorToString(httpCode).c_str());
+      }
+
+      http.end();
+    }
+    else
+    {
+      Serial.printf("http begin --SEND_DATA-- FAILED !!! Unable to connect !!!!\n");
+    }
+
+    if (http.begin(DATA_ROUTE))
+    {
+      long value = random(50, 70);
+      Serial.printf("\n\nhumidity:  %d \n", value);       // print out the value
+      http.addHeader("Content-Type", "application/json"); //Specify content-type header
+
+      //CREATE PYALOAD
+      const size_t bufferSize = 2 * JSON_OBJECT_SIZE(2);
+      DynamicJsonBuffer jsonBuffer(bufferSize);
+
+      JsonObject &root = jsonBuffer.createObject();
+
+      root["device"] = DEVICE_ID;
+
+      JsonObject &dataItem = root.createNestedObject("dataItem");
+      dataItem["dataValue"] = value;
+      dataItem["dataType"] = "humidity";
+
+      stringVariable = "";
+      root.printTo(stringVariable);
+      //END CREATE PYALOAD
+
+      Serial.printf("http post --SEND_DATA-- for %s \n", DEVICE_ID.c_str());
+      // start connection and send HTTP header
+      int httpCode = http.POST(stringVariable);
+
+      if (httpCode > 0)
+      {
+        Serial.printf("http post --SEND_DATA-- SUCCESSFULL ... Code: %d \t payload: %s \n", httpCode, http.getString().c_str());
+      }
+      else
+      {
+        Serial.printf("http post --SEND_DATA-- FAILED !!! : %s\n", http.errorToString(httpCode).c_str());
+      }
+
+      http.end();
+    }
+    else
+    {
+      Serial.printf("http begin --SEND_DATA-- FAILED !!! Unable to connect !!!!\n");
+    }
+
+    if (http.begin(DATA_ROUTE))
+    {
+      long value = random(0, 30);
+      Serial.printf("\n\nlight:  %d \n", value);       // print out the value
+      http.addHeader("Content-Type", "application/json"); //Specify content-type header
+
+      //CREATE PYALOAD
+      const size_t bufferSize = 2 * JSON_OBJECT_SIZE(2);
+      DynamicJsonBuffer jsonBuffer(bufferSize);
+
+      JsonObject &root = jsonBuffer.createObject();
+
+      root["device"] = DEVICE_ID;
+
+      JsonObject &dataItem = root.createNestedObject("dataItem");
+      dataItem["dataValue"] = value / 10.0;
+      dataItem["dataType"] = "light";
 
       stringVariable = "";
       root.printTo(stringVariable);

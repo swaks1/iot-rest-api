@@ -85,6 +85,8 @@ controller.reloadDataTypes = async (req, res, next) => {
     .distinct("dataItem.dataType", { device: device._id })
     .catch(err => next(err));
 
+  dataTypes = dataTypes.filter(item => item != "command"); // remove command from the dataTypes
+  dataTypes.sort();
   device.dataTypes = dataTypes;
   var savedDevice = await device.save();
   res.json(savedDevice);
@@ -107,15 +109,15 @@ controller.LoginRegister = async (req, res, next) => {
     controller.AddLocationCommand(createdDevice._id);
     res.json(createdDevice);
   } else {
-    if (existingDevice.password == reqDevice.password) {
-      logger.log("ok name ok password --> " + reqDevice.name);
-      existingDevice = existingDevice.toObject(); // converts the mongoose object to JS object so its property can be deleted
-      delete existingDevice.password;
-      res.json(existingDevice);
-    } else {
-      logger.log("ok name wrong password --> " + reqDevice.name);
-      res.status(400).send("WRONG PASSWORD");
-    }
+    // if (existingDevice.password == reqDevice.password) {
+    logger.log("ok name ok password --> " + reqDevice.name);
+    existingDevice = existingDevice.toObject(); // converts the mongoose object to JS object so its property can be deleted
+    delete existingDevice.password;
+    res.json(existingDevice);
+    // } else {
+    //  logger.log("ok name wrong password --> " + reqDevice.name);
+    //  res.status(400).send("WRONG PASSWORD");
+    // }
   }
 };
 
