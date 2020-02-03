@@ -10,7 +10,11 @@ controller.param = async (req, res, next, name) => {
     .exec()
     .then(result => {
       if (!result) {
-        next(new Error("No SummaryDashboard with that name"));
+        if (name == "beehiveDashboard") {
+          createInitialBeehiveDashboard(req, next);
+        } else {
+          next(new Error("No SummaryDashboard with that name"));
+        }
       } else {
         req.summaryDashboard = result;
         next();
@@ -121,4 +125,19 @@ controller.updateDataTypes = async (req, res, next) => {
     .catch(err => next(err));
 };
 
+const createInitialBeehiveDashboard = (req, next) => {
+  SummaryDashboard.create({
+    name: "beehiveDashboard",
+    value: {
+      devices: [],
+      dataTypes: [],
+      periodInPast: 24
+    }
+  })
+    .then(summaryDashboard => {
+      req.summaryDashboard = summaryDashboard;
+      next();
+    })
+    .catch(err => next(err));
+};
 export default controller;
