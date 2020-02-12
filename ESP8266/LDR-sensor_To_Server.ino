@@ -3,8 +3,10 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
-const char *ssid = "Poposki";
-const char *wifi_password = "10denari";
+// const char *ssid = "Poposki";
+// const char *wifi_password = "10denari";
+const char *ssid = "Galaxy S8";
+const char *wifi_password = "12345678r";
 
 const char *DEVICE_NAME = "home-device-1";
 const char *DEVICE_PASSWORD = "123456";
@@ -22,13 +24,14 @@ double latitude = 0.0;
 double longitude = 0.0;
 double accuracy = 0.0;
 
-//192.168.100.h8
-//192.168.43.m188
-String LOG_IN_ROUTE = "http://192.168.100.5:8000/api/devices/LogIn";
-String DATA_ROUTE = "http://192.168.100.5:8000/api/data";
-String CHECK_COMMAND_ROUTE = "http://192.168.100.5:8000/api/command/notExecuted/"; //DEVICE_ID to be added
-String DEVICE_INFO_ROUTE = "http://192.168.100.5:8000/api/devices/";               //DEVICE_ID to be added
-String GOOGLE_CERTIFICATE_ROUTE = "http://192.168.100.5:8000/api/command/GetGoogleCertificate/Thumbprint";
+//192.168.100.h8 (192.168.100.5)
+//192.168.43.m188  (192.168.43.188)
+
+String LOG_IN_ROUTE = "http://192.168.43.188:8000/api/devices/LogIn";
+String DATA_ROUTE = "http://192.168.43.188:8000/api/data";
+String CHECK_COMMAND_ROUTE = "http://192.168.43.188:8000/api/command/notExecuted/"; //DEVICE_ID to be added
+String DEVICE_INFO_ROUTE = "http://192.168.43.188:8000/api/devices/";               //DEVICE_ID to be added
+String GOOGLE_CERTIFICATE_ROUTE = "http://192.168.43.188:8000/api/command/GetGoogleCertificate/Thumbprint";
 
 unsigned long commandCheckDelay = 10000; //10seconds
 unsigned long lastCommandCheckTime;
