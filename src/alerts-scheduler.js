@@ -3,75 +3,198 @@ import logger from "./utils/logger";
 import helper from "./utils/helper";
 import Device from "./api/device/deviceModel";
 import Data from "./api/data/dataModel";
-import Command from "./api/command/commandModel";
+import Alert from "./api/alerts/alert/alertModel";
+import AlertHistory from "./api/alerts/alertHistory/alertHistoryModel";
 import schedule from "node-schedule";
 import nodemailer from "nodemailer";
 
 export const startAlertScheduler = async () => {
-  // 1 minute
+  // currently schedule time 1 minute.. check cron format
   schedule.scheduleJob("*/1 * * * *", function() {
-    // printStuff();
-    sendMail({
-      name: "Home-device",
-      alerts: [
-        {
-          dataType: "temperature",
-          rules: [
-            {
-              operator: "greater",
-              operatorValue: "40",
-              actualValue: 44
-            },
-            {
-              operator: "notSeen",
-              operatorValue: "120min",
-              actualValue: ""
-            }
-          ]
-        },
-        {
-          dataType: "humidity",
-          rules: [
-            {
-              operator: "lower",
-              operatorValue: "12",
-              actualValue: 9
-            },
-            {
-              operator: "greater",
-              operatorValue: "40",
-              actualValue: 44
-            },
-            {
-              operator: "notSeen",
-              operatorValue: "120min",
-              actualValue: ""
-            }
-          ]
-        }
-      ]
-    });
+    logger.log("Checking for alerts...");
+    checkAllDevicesForAlerts();
   });
-
   return Promise.resolve(true);
 };
 
-// EXAMPLE every 5 minutes
-// var event = schedule.scheduleJob("*/5 * * * *", function() {
-//   console.log('This runs every 5 minutes');
-// });
-// *    *    *    *    *    *
-// ┬    ┬    ┬    ┬    ┬    ┬
-// │    │    │    │    │    │
-// │    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
-// │    │    │    │    └───── month (1 - 12)
-// │    │    │    └────────── day of month (1 - 31)
-// │    │    └─────────────── hour (0 - 23)
-// │    └──────────────────── minute (0 - 59)
-// └───────────────────────── second (0 - 59, OPTIONAL)
+var checkAllDevicesForAlerts = async () => {
+  let devices = await Device.find({})
+    .lean()
+    .exec();
+  for (let i = 0; i < devices.length; i++) {
+    let device = devices[i];
+    await handleDevice(device);
+  }
+};
 
-var printStuff = () => {
-  console.log("hey", new Date());
+var handleDevice = async device => {
+  try {
+    let alerts = await Alert.find({ device: device._id })
+      .lean()
+      .exec();
+    let alertsFiltered = alerts.filter(alert =>
+      alert.rules.some(rule => rule.selected)
+    );
+    let dataTypes = alertsFiltered.map(alert => alert.dataType);
+    let alertsToSend = [];
+
+    for (let i = 0; i < dataTypes.length; i++) {
+      let dataType = dataTypes[i];
+      var data = await Data.find({
+        device: device._id,
+        "dataItem.dataType": dataType
+      })
+        .sort({ created: -1 })
+        .limit(1)
+        .lean()
+        .exec();
+      if (data && data.length > 0) {
+        let alertHistoryItem = await checkAlert(data[0]);
+        if (alertHistoryItem) {
+          alertsToSend.push(alertHistoryItem);
+        }
+      }
+    }
+
+    if (alertsToSend.length > 0) {
+      sendAlerts(alertsToSend, device.name);
+    }
+  } catch (error) {
+    logger.log(error, new Date());
+  }
+};
+
+var checkAlert = async data => {
+  let alert = await Alert.findOne({
+    device: data.device,
+    dataType: data.dataItem.dataType
+  })
+    .lean()
+    .exec();
+
+  if (alert) {
+    let rulesTriggered = [];
+    let rules = alert.rules.filter(rule => rule.selected == true);
+    for (let i = 0; i < rules.length; i++) {
+      let rule = rules[i];
+      let ruleTriggered = checkIfRuleIsTriggered(data, rule);
+      if (ruleTriggered) {
+        rulesTriggered.push(ruleTriggered);
+      }
+    }
+    if (rulesTriggered.length > 0) {
+      let alertHistoryItem = await addOrUpdateAlertHistoryItem(
+        data,
+        rulesTriggered,
+        alert
+      );
+      return alertHistoryItem;
+    }
+  }
+
+  return null;
+};
+
+var checkIfRuleIsTriggered = (data, rule) => {
+  if (rule.operator == "greater") {
+    let operatorValue = parseFloat(rule.operatorValue);
+    let actualValue = parseFloat(data.dataItem.dataValue);
+    if (actualValue > operatorValue) {
+      return {
+        operator: "greater",
+        operatorValue,
+        actualValue
+      };
+    }
+  }
+
+  if (rule.operator == "less") {
+    let operatorValue = parseFloat(rule.operatorValue);
+    let actualValue = parseFloat(data.dataItem.dataValue);
+    if (actualValue < operatorValue) {
+      return {
+        operator: "less",
+        operatorValue,
+        actualValue
+      };
+    }
+  }
+
+  if (rule.operator == "lastSeen") {
+    let operatorValue = parseInt(rule.operatorValue); // minutes
+    let maxDifference = 1000 * 60 * operatorValue; // miliseconds
+
+    let dateFromData = new Date(data.created);
+    let dateNow = new Date();
+
+    if (dateNow - dateFromData > maxDifference) {
+      return {
+        operator: "lastSeen",
+        operatorValue,
+        actualValue: helper.getDate(dateFromData)
+      };
+    }
+  }
+
+  return null;
+};
+
+var addOrUpdateAlertHistoryItem = async (data, rulesTriggered, alert) => {
+  let changed = false;
+  let alertHistoryItem = await AlertHistory.findOne({
+    device: data.device,
+    data: data._id
+  }).exec();
+
+  if (alertHistoryItem) {
+    rulesTriggered.forEach(ruleTriggered => {
+      let existing = alertHistoryItem.rulesTriggered.find(
+        item => item.operator == ruleTriggered.operator
+      );
+      if (!existing) {
+        alertHistoryItem.rulesTriggered.push(ruleTriggered);
+        changed = true;
+      }
+    });
+    if (changed) {
+      alertHistoryItem.channels = alert.channels
+        .filter(item => item.selected)
+        .map(item => item.name);
+      await alertHistoryItem.save();
+    }
+  } else {
+    alertHistoryItem = await AlertHistory.create({
+      device: data.device,
+      dataType: data.dataItem.dataType,
+      data: data._id,
+      rulesTriggered: rulesTriggered,
+      channels: alert.channels
+        .filter(item => item.selected)
+        .map(item => item.name)
+    });
+    changed = true;
+  }
+  if (changed) {
+    return alertHistoryItem;
+  } else {
+    return null;
+  }
+};
+
+var sendAlerts = async (alertsToSend, deviceName) => {
+  // by mail
+  let alertsForMail = alertsToSend.filter(alert =>
+    alert.channels.some(item => item == "email")
+  );
+  if (alertsForMail.length > 0) {
+    let device = {
+      name: deviceName,
+      alerts: alertsForMail
+    };
+    sendMail(device);
+  }
+
+  // by sms ?
 };
 
 var transport = nodemailer.createTransport({
@@ -87,12 +210,8 @@ var transport = nodemailer.createTransport({
 var sendMail = device => {
   let alerts = device.alerts.map(alert => {
     let dataType = alert.dataType;
-    let rules = alert.rules.map(rule => {
-      return `<tr>
-                <td><b>${rule.operator}</b></td>
-                <td> ${rule.operatorValue}</td> 
-                <td> <b>${rule.actualValue}</b></td>
-              </tr>`;
+    let rules = alert.rulesTriggered.map(rule => {
+      return getRow(rule);
     });
     return `<h2>${dataType} </h2>
             <table id="alertsTable">
@@ -144,26 +263,33 @@ var sendMail = device => {
 
   transport.sendMail(message, function(err, info) {
     if (err) {
-      console.log(err);
+      logger.log(err);
     } else {
-      console.log(info);
+      logger.log(info);
     }
   });
+};
+
+var getRow = rule => {
+  let { operator, operatorValue, actualValue } = rule;
+  if (operator == "lastSeen") {
+    operatorValue = operatorValue + " min";
+    actualValue = actualValue.substring(0, 19).replace("T", " ");
+  }
+  return `<tr>
+          <td><b>${operator}</b></td>
+          <td> ${operatorValue}</td> 
+          <td> <b>${actualValue}</b></td>
+        </tr>`;
 };
 
 // ---------------------------------------------------------------
 // ---------------------------------------------------------------
 // ---------------------------------------------------------------
 
-// var ttnDataMethods = {};
+var alertsMethods = {};
 
-// ttnDataMethods.sendUplink = async (
-//   devId,
-//   hexDataArray,
-//   port = 1,
-//   confirmed = false
-// ) => {
-//   dataClient.send(devId, Buffer.from(hexDataArray), port, confirmed);
-// };
+alertsMethods.checkAlert = checkAlert;
+alertsMethods.sendAlerts = sendAlerts;
 
-// export const ttnDataAPI = ttnDataMethods;
+export const alertsAPI = alertsMethods;
