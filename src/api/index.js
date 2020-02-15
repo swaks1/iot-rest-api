@@ -4,6 +4,7 @@ import ttnDeviceRouter from "./ttn/ttnDeviceRouter";
 import dataRouter from "./data/dataRouter";
 import commandRouter from "./command/commandRouter";
 import summaryDashboardRouter from "./summaryDashboard/summaryDashboardRouter";
+import alertsRouter from "./alerts/alert/alertRouter";
 import userRouter from "./user/user.router";
 
 var router = express.Router();
@@ -14,6 +15,7 @@ router.use("/ttnDevices", ttnDeviceRouter);
 router.use("/data", dataRouter);
 router.use("/command", commandRouter);
 router.use("/summaryDashboard", summaryDashboardRouter);
+router.use("/alerts", alertsRouter);
 router.use("/user", userRouter);
 
 export default router;

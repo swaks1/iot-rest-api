@@ -1,6 +1,7 @@
 import Device from "./deviceModel";
 import Command from "../command/commandModel"; // maybe refactor this so logic for Commands wont be in the deviceController ?
 import Data from "../data/dataModel";
+import Alert from "../alerts/alert/alertModel";
 import logger from "../../utils/logger";
 import _ from "lodash";
 // import helper from "../../utils/helper";
@@ -79,7 +80,13 @@ controller.reloadDataTypes = async (req, res, next) => {
     next(new Error("No device with that id.."));
     return;
   }
-  var device = await Device.findById(deviceId).catch(err => next(err));
+  try {
+    var device = await Device.findById(deviceId);
+    if (!device) throw new Error("device not found !");
+  } catch (err) {
+    next(err);
+    return;
+  }
 
   let dataTypes = await Data.collection
     .distinct("dataItem.dataType", { device: device._id })
@@ -89,6 +96,10 @@ controller.reloadDataTypes = async (req, res, next) => {
   dataTypes.sort();
   device.dataTypes = dataTypes;
   var savedDevice = await device.save();
+
+  // for each dataType creates new alert and adds greater, less and lastSeen rules.
+  await addInitialAlerts(deviceId, dataTypes);
+
   res.json(savedDevice);
 };
 
@@ -160,6 +171,55 @@ controller.modifyTTNInfo = async (req, res, next) => {
     var result = await existingDevice.save().catch(err => next(err));
     return res.json(result);
   }
+};
+
+const addInitialAlerts = async (deviceId, dataTypes) => {
+  try {
+    let existingAlerts = await Alert.find({ device: deviceId }).exec();
+    dataTypes.forEach(dataType => {
+      if (!existingAlerts.find(item => item.dataType == dataType)) {
+        addInitialAlert(deviceId, dataType);
+      }
+    });
+  } catch (error) {
+    logger.log(error);
+  }
+};
+
+const addInitialAlert = async (deviceId, dataType) => {
+  Alert.create({
+    device: deviceId,
+    dataType: dataType,
+    rules: [
+      {
+        operator: "greater",
+        operatorValue: "10",
+        selected: false
+      },
+      {
+        operator: "less",
+        operatorValue: "0",
+        selected: false
+      },
+      {
+        operator: "lastSeen",
+        operatorValue: "60",
+        selected: false
+      }
+    ],
+    channels: [
+      {
+        name: "email",
+        selected: true
+      },
+      {
+        name: "sms",
+        selected: false
+      }
+    ]
+  })
+    .then(alert => {})
+    .catch(err => logger.log(err));
 };
 
 export default controller;

@@ -35,24 +35,6 @@ controller.get = async (req, res, next) => {
   if (req.query.dataType && req.query.dataType != "") {
     dataType = req.query.dataType;
   }
-  // Get first one... but this is async so it doesnt work, dataType coninues empty in the below code... await needed here
-  // else {
-  //     //get first dataType by default
-  //     Data.collection.findOne()
-  //         .then(response => {
-  //             logger.log("OK");
-  //             if (response != null) {
-  //                 logger.log(response);
-  //                 dataType = response.dataItem.dataValue;
-  //             }
-  //             else {
-  //                 logger.log("No documents found (no dataType)");
-  //                 res.json([]);
-  //             }
-
-  //         })
-  //         .catch(err => next(err));
-  // }
 
   if (!deviceId) {
     res.send("add device id");
