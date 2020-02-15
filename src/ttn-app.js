@@ -95,8 +95,6 @@ var updateCommandExecuted = async (pseudoId, existingDevice) => {
     .sort({ created: -1 })
     .exec();
 
-  console.log(commands);
-
   if (commands && commands.length > 0) {
     let command = commands[0];
     command.executed = true;

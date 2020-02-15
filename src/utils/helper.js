@@ -18,13 +18,19 @@ var helper = {
   fixDates: function(mongooseObject, property) {
     if (mongooseObject instanceof Array) {
       let mappedData = mongooseObject.map(item => {
-        let itemObj = item.toObject();
+        let itemObj = { ...item };
+        if (typeof item.toObject !== "undefined") {
+          itemObj = item.toObject();
+        }
         itemObj[property] = helper.getDate(itemObj[property]);
         return itemObj;
       });
       return mappedData;
     } else {
-      let itemObj = mongooseObject.toObject();
+      let itemObj = { ...mongooseObject };
+      if (typeof mongooseObject.toObject !== "undefined") {
+        itemObj = mongooseObject.toObject();
+      }
       itemObj[property] = helper.getDate(itemObj[property]);
       return itemObj;
     }

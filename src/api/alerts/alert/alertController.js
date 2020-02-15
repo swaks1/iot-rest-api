@@ -4,7 +4,7 @@ import _ from "lodash";
 
 var controller = {};
 
-// like middleware that will interecept routes with :name
+// like middleware that will interecept routes with :id
 controller.param = async (req, res, next, id) => {
   Alert.findById(id)
     .then(alert => {

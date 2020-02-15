@@ -360,7 +360,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/data?deviceId=5dd0630aa751b400ec892be7&pageSize=10&period=lastHour&dataType=humidity",
+					"raw": "http://localhost:8000/api/data?deviceId=5e3880cd8638a01914028059&pageSize=10&period=mostRecent&dataType=humidity",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -373,7 +373,7 @@
 					"query": [
 						{
 							"key": "deviceId",
-							"value": "5dd0630aa751b400ec892be7"
+							"value": "5e3880cd8638a01914028059"
 						},
 						{
 							"key": "pageSize",
@@ -381,7 +381,7 @@
 						},
 						{
 							"key": "period",
-							"value": "lastHour"
+							"value": "mostRecent"
 						},
 						{
 							"key": "dataType",
@@ -956,6 +956,110 @@
 					"path": [
 						"api",
 						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "alertsHistory",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/alertsHistory?deviceId=5e3880cd8638a01914028059&pageSize=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alertsHistory"
+					],
+					"query": [
+						{
+							"key": "deviceId",
+							"value": "5e3880cd8638a01914028059"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "alertsHistory/id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/alertsHistory/5e4863c8ee8426307c7aceb5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alertsHistory",
+						"5e4863c8ee8426307c7aceb5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "alertsHistory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t    \"device\": \"5e3880cd8638a01914028059\",\r\n\t    \"dataType\": \"temperature\",\r\n\t    \"data\": \"5e3886cdb100444f087e7c5b\",\r\n\t    \"rulesTriggered\": [\r\n\t      {\r\n\t        \"operator\": \"greater\",\r\n\t        \"operatorValue\": \"200\",\r\n\t        \"actualValue\": \"201\"\r\n\t      },\r\n  \t      {\r\n\t        \"operator\": \"lastSeen\",\r\n\t        \"operatorValue\": \"60\",\r\n\t        \"actualValue\": \"\"\r\n\t      }\r\n\t    ],\r\n\t    \"channels\": [\"email\"]\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/alertsHistory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alertsHistory"
 					]
 				}
 			},
