@@ -108,13 +108,41 @@ controller.get = async (req, res, next) => {
                     dataValue: average,
                     dataType: dataType
                   },
-                  _id: `data${index}`,
                   device: deviceId,
                   created: `${year}-${month}`,
                   dataType: dataType
                 };
               });
-              res.json(mappedData);
+              // if some months are empty we will miss them from the response...
+              // here we add also those months that are empty with average of 0
+              let resultData = [];
+
+              for (let index = 1; index <= 12; index++) {
+                let month = index;
+                if (month.toString().length == 1) {
+                  month = "0" + month;
+                }
+                let created = `${currentYear}-${month}`;
+                let mappedItem = mappedData.find(
+                  item => item.created == created
+                );
+                if (mappedItem) {
+                  mappedItem._id = `data${index - 1}`;
+                } else {
+                  mappedItem = {
+                    _id: `data${index - 1}`,
+                    dataItem: {
+                      dataValue: 0,
+                      dataType: dataType
+                    },
+                    device: deviceId,
+                    created: created,
+                    dataType: dataType
+                  };
+                }
+                resultData.push(mappedItem);
+              }
+              res.json(resultData);
             }
           }
         );
