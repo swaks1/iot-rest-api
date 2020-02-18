@@ -360,7 +360,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/data?deviceId=5e3880cd8638a01914028059&pageSize=10&period=mostRecent&dataType=humidity",
+					"raw": "http://localhost:8000/api/data?deviceId=5e3880cd8638a01914028059&period=monthly&pageSize=12&dataType=humidity",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -376,12 +376,12 @@
 							"value": "5e3880cd8638a01914028059"
 						},
 						{
-							"key": "pageSize",
-							"value": "10"
+							"key": "period",
+							"value": "monthly"
 						},
 						{
-							"key": "period",
-							"value": "mostRecent"
+							"key": "pageSize",
+							"value": "12"
 						},
 						{
 							"key": "dataType",
@@ -944,7 +944,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"deviceId\":\"5e3880cd8638a01914028059\",\r\n\t\"alerts\":[{\r\n\t    \"device\": \"5e3880cd8638a01914028059\",\r\n\t    \"dataType\": \"temperature\",\r\n\t    \"rules\": [\r\n\t      {\r\n\t        \"operator\": \"greater\",\r\n\t        \"operatorValue\": \"200\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"less\",\r\n\t        \"operatorValue\": \"10\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"lastSeen\",\r\n\t        \"operatorValue\": \"60\",\r\n\t        \"selected\": true\r\n\t      }\r\n\t    ],\r\n\t    \"channels\": [\r\n\t      {\r\n\t        \"name\": \"email\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"name\": \"sms\",\r\n\t        \"selected\": true\r\n\t      }\r\n\t    ]\r\n\t  },\r\n\t  {\r\n\t    \"device\": \"5e3880cd8638a01914028059\",\r\n\t    \"dataType\": \"humidity\",\r\n\t    \"rules\": [\r\n\t      {\r\n\t        \"operator\": \"greater\",\r\n\t        \"operatorValue\": \"2\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"less\",\r\n\t        \"operatorValue\": \"1\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"lastSeen\",\r\n\t        \"operatorValue\": \"60\",\r\n\t        \"selected\": false\r\n\t      }\r\n\t    ],\r\n\t    \"channels\": [\r\n\t      {\r\n\t        \"name\": \"email\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"name\": \"sms\",\r\n\t        \"selected\": true\r\n\t      }\r\n\t    ]\r\n\t  }]\r\n}\r\n\r\n"
+					"raw": "{\r\n\t\"deviceId\":\"5e3880cd8638a01914028059\",\r\n\t\"alerts\":[{\r\n\t    \"device\": \"5e3880cd8638a01914028059\",\r\n\t    \"dataType\": \"temperature\",\r\n\t    \"rules\": [\r\n\t      {\r\n\t        \"operator\": \"greater\",\r\n\t        \"operatorValue\": \"200\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"less\",\r\n\t        \"operatorValue\": \"10\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"lastSeen\",\r\n\t        \"operatorValue\": \"60\",\r\n\t        \"selected\": true\r\n\t      }\r\n\t    ],\r\n\t    \"channels\": [\r\n\t      {\r\n\t        \"name\": \"email\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"name\": \"blynk\",\r\n\t        \"selected\": true\r\n\t      }\r\n\t    ]\r\n\t  },\r\n\t  {\r\n\t    \"device\": \"5e3880cd8638a01914028059\",\r\n\t    \"dataType\": \"humidity\",\r\n\t    \"rules\": [\r\n\t      {\r\n\t        \"operator\": \"greater\",\r\n\t        \"operatorValue\": \"2\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"less\",\r\n\t        \"operatorValue\": \"1\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"operator\": \"lastSeen\",\r\n\t        \"operatorValue\": \"60\",\r\n\t        \"selected\": false\r\n\t      }\r\n\t    ],\r\n\t    \"channels\": [\r\n\t      {\r\n\t        \"name\": \"email\",\r\n\t        \"selected\": true\r\n\t      },\r\n\t      {\r\n\t        \"name\": \"blynk\",\r\n\t        \"selected\": true\r\n\t      }\r\n\t    ]\r\n\t  }]\r\n}\r\n\r\n"
 				},
 				"url": {
 					"raw": "http://localhost:8000/api/alerts",

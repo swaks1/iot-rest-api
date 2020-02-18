@@ -7,6 +7,7 @@ import Alert from "./api/alerts/alert/alertModel";
 import AlertHistory from "./api/alerts/alertHistory/alertHistoryModel";
 import schedule from "node-schedule";
 import nodemailer from "nodemailer";
+import BlynkLib from "blynk-library";
 
 export const startAlertScheduler = async () => {
   // currently schedule time 1 minute.. check cron format
@@ -14,6 +15,43 @@ export const startAlertScheduler = async () => {
     logger.log("Checking for alerts...");
     checkAllDevicesForAlerts();
   });
+
+  var blynk = new BlynkLib.Blynk(config.blynkAccesskey);
+  let v1 = new blynk.VirtualPin(1);
+  let v9 = new blynk.VirtualPin(9);
+  let terminal = new blynk.WidgetTerminal(2);
+
+  v1.on("write", function(param) {
+    console.log("V1:", param);
+  });
+
+  v9.on("read", function() {
+    v9.write(new Date());
+  });
+
+  setInterval(() => {
+    // blynk.notify("Alert for some devices !");
+    let message = `
+----------##############------------
+date:   ${new Date().toISOString().substring(0, 10)} ${new Date().toISOString().substring(11, 19)}
+device: TEST DEVICE
+------------------------------------   
+Temperature:
+${"op".padStart(8)} | ${"refVal".padStart(6)} | ${"actVal".padEnd(20)}
+${"greater".padStart(8)} | ${"50".padStart(6)} | ${"2018-12-12 12:13:14".padEnd(20)}
+${"less".padStart(8)} | ${"22".padStart(6)} | ${"111".padEnd(20)}
+------------------------------------  
+Humidity:
+${"op".padStart(10)} | ${"refVal".padStart(10)} | ${"actVal".padStart(10)}
+${"greater".padStart(10)} | ${"222".padStart(10)} | ${"23123120".padStart(10)}
+------------------------------------
+----------##############------------
+
+
+`;
+    terminal.write(message);
+  }, 10000);
+
   return Promise.resolve(true);
 };
 
@@ -21,9 +59,16 @@ var checkAllDevicesForAlerts = async () => {
   let devices = await Device.find({})
     .lean()
     .exec();
+  let devicesWithAlerts = [];
   for (let i = 0; i < devices.length; i++) {
     let device = devices[i];
-    await handleDevice(device);
+    let deviceWithAlerts = await handleDevice(device);
+    if (deviceWithAlerts) {
+      devicesWithAlerts.push(deviceWithAlerts);
+    }
+  }
+  if (devicesWithAlerts.length > 0) {
+    sendAlerts(devicesWithAlerts);
   }
 };
 
@@ -55,10 +100,13 @@ var handleDevice = async device => {
         }
       }
     }
-
     if (alertsToSend.length > 0) {
-      sendAlerts(alertsToSend, device.name);
+      return {
+        deviceName: device.name,
+        alertsToSend: alertsToSend
+      };
     }
+    return null;
   } catch (error) {
     logger.log(error, new Date());
   }
@@ -181,20 +229,38 @@ var addOrUpdateAlertHistoryItem = async (data, rulesTriggered, alert) => {
   }
 };
 
-var sendAlerts = async (alertsToSend, deviceName) => {
+var sendAlerts = async devicesWithAlerts => {
   // by mail
-  let alertsForMail = alertsToSend.filter(alert =>
-    alert.channels.some(item => item == "email")
+  let devicesWithMail = devicesWithAlerts.filter(device =>
+    device.alertsToSend.some(alert =>
+      alert.channels.some(item => item == "email")
+    )
   );
-  if (alertsForMail.length > 0) {
-    let device = {
-      name: deviceName,
-      alerts: alertsForMail
-    };
-    sendMail(device);
+  devicesWithMail = devicesWithMail.map(device => ({
+    ...device,
+    alertsToSend: device.alertsToSend.filter(alert =>
+      alert.channels.some(item => item == "email")
+    )
+  }));
+  if (devicesWithMail.length > 0) {
+    sendMail(devicesWithMail);
   }
 
-  // by sms ?
+  // by blynk ?
+  // let devicesWithBlynk = devicesWithAlerts.filter(device =>
+  //   device.alertsToSend.some(alert =>
+  //     alert.channels.some(item => item == "blynk")
+  //   )
+  // );
+  // devicesWithBlynk = devicesWithBlynk.map(device => ({
+  //   ...device,
+  //   alertsToSend: device.alertsToSend.filter(alert =>
+  //     alert.channels.some(item => item == "blynk")
+  //   )
+  // }));
+  // if (devicesWithBlynk.length > 0) {
+  //   sendBlynk(devicesWithBlynk);
+  // }
 };
 
 var transport = nodemailer.createTransport({
@@ -207,11 +273,35 @@ var transport = nodemailer.createTransport({
   }
 });
 
-var sendMail = device => {
-  let alerts = device.alerts.map(alert => {
+var sendMail = devices => {
+  let mailBody = "";
+  devices.forEach(device => {
+    let deviceHtml = generateHTMLForDevice(device);
+    mailBody += deviceHtml;
+  });
+  let deviceNames = devices.map(device => device.deviceName);
+  let subject = `Alerts for ${deviceNames.join(", ")}`;
+
+  const message = composeMail(subject, mailBody);
+  transport.sendMail(message, function(err, info) {
+    if (err) {
+      logger.log(err);
+    } else {
+      logger.log(info);
+    }
+  });
+};
+
+var generateHTMLForDevice = device => {
+  let alerts = device.alertsToSend.map(alert => {
     let dataType = alert.dataType;
     let rules = alert.rulesTriggered.map(rule => {
-      return getRow(rule);
+      let ruleModified = getRuleModified(rule);
+      return `<tr>
+        <td><b>${ruleModified.operator}</b></td>
+        <td> ${ruleModified.operatorValue}</td> 
+        <td> <b>${ruleModified.actualValue}</b></td>
+      </tr>`;
     });
     return `<h2>${dataType} </h2>
             <table id="alertsTable">
@@ -225,62 +315,59 @@ var sendMail = device => {
             <br/>
             <hr/>`;
   });
-  const message = {
-    from: config.email.from, // Sender address (wont work.. gmail sends the source address)
-    to: config.email.to,
-    subject: `Alert for device: ${device.name} `,
-    html: `
-    <style>
-      #alertsTable {
-        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-      }
-      
-      #alertsTable td, #alertsTable th {
-        border: 1px solid #ddd;
-        padding: 8px;
-      }
-      
-      #alertsTable tr:nth-child(even){background-color: #f2f2f2;}
-      
-      #alertsTable tr:hover {background-color: #ddd;}
-      
-      #alertsTable th {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        text-align: left;
-        background-color: #4CAF50;
-        color: white;
-      }
-    </style>
-
-    <h1>WARNING for ${device.name}!</h1>
-    <p>The following rules were triggered for <b>${device.name}</b></p>
-    <br/><br/>
-    ${alerts.join("")}`
-  };
-
-  transport.sendMail(message, function(err, info) {
-    if (err) {
-      logger.log(err);
-    } else {
-      logger.log(info);
-    }
-  });
+  return `
+      <h1>${device.deviceName}!</h1>
+      <p>The following rules were triggered for <b>${device.deviceName}</b></p>
+      <br/>
+      ${alerts.join("")}
+      <br/>
+      <br/>
+      <hr/>
+      `;
 };
 
-var getRow = rule => {
+var getRuleModified = rule => {
   let { operator, operatorValue, actualValue } = rule;
   if (operator == "lastSeen") {
     operatorValue = operatorValue + " min";
     actualValue = actualValue.substring(0, 19).replace("T", " ");
   }
-  return `<tr>
-          <td><b>${operator}</b></td>
-          <td> ${operatorValue}</td> 
-          <td> <b>${actualValue}</b></td>
-        </tr>`;
+  return { ...rule, operator, operatorValue, actualValue };
+};
+
+var composeMail = (subject, body) => {
+  return {
+    from: config.email.from, // Sender address (wont work.. gmail sends the source address)
+    to: config.email.to,
+    subject: subject,
+    html: `
+  <style>
+    #alertsTable {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    #alertsTable td, #alertsTable th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    #alertsTable tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #alertsTable tr:hover {background-color: #ddd;}
+    
+    #alertsTable th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
+  
+  ${body}`
+  };
 };
 
 // ---------------------------------------------------------------
