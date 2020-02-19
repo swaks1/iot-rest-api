@@ -9,53 +9,39 @@ import schedule from "node-schedule";
 import nodemailer from "nodemailer";
 import BlynkLib from "blynk-library";
 
+// mail
+var transport = nodemailer.createTransport({
+  host: config.email.host,
+  port: config.email.port,
+  secure: true, // use SSL
+  auth: {
+    user: config.email.user,
+    pass: config.email.pass
+  }
+});
+
+var blynk = new BlynkLib.Blynk(config.blynkAccesskey);
+let terminal = new blynk.WidgetTerminal(2);
+// let v1 = new blynk.VirtualPin(1);
+// let v9 = new blynk.VirtualPin(9);
+// v1.on("write", function(param) {
+//   console.log("V1:", param);
+// });
+// v9.on("read", function() {
+//   v9.write(new Date());
+// });
+
 export const startAlertScheduler = async () => {
   // currently schedule time 1 minute.. check cron format
   schedule.scheduleJob("*/1 * * * *", function() {
     logger.log("Checking for alerts...");
-    checkAllDevicesForAlerts();
+    checkAllDevicesForAlertsAndSend();
   });
-
-  var blynk = new BlynkLib.Blynk(config.blynkAccesskey);
-  let v1 = new blynk.VirtualPin(1);
-  let v9 = new blynk.VirtualPin(9);
-  let terminal = new blynk.WidgetTerminal(2);
-
-  v1.on("write", function(param) {
-    console.log("V1:", param);
-  });
-
-  v9.on("read", function() {
-    v9.write(new Date());
-  });
-
-  setInterval(() => {
-    // blynk.notify("Alert for some devices !");
-    let message = `
-----------##############------------
-date:   ${new Date().toISOString().substring(0, 10)} ${new Date().toISOString().substring(11, 19)}
-device: TEST DEVICE
-------------------------------------   
-Temperature:
-${"op".padStart(8)} | ${"refVal".padStart(6)} | ${"actVal".padEnd(20)}
-${"greater".padStart(8)} | ${"50".padStart(6)} | ${"2018-12-12 12:13:14".padEnd(20)}
-${"less".padStart(8)} | ${"22".padStart(6)} | ${"111".padEnd(20)}
-------------------------------------  
-Humidity:
-${"op".padStart(10)} | ${"refVal".padStart(10)} | ${"actVal".padStart(10)}
-${"greater".padStart(10)} | ${"222".padStart(10)} | ${"23123120".padStart(10)}
-------------------------------------
-----------##############------------
-
-
-`;
-    terminal.write(message);
-  }, 10000);
 
   return Promise.resolve(true);
 };
 
-var checkAllDevicesForAlerts = async () => {
+var checkAllDevicesForAlertsAndSend = async () => {
   let devices = await Device.find({})
     .lean()
     .exec();
@@ -247,31 +233,21 @@ var sendAlerts = async devicesWithAlerts => {
   }
 
   // by blynk ?
-  // let devicesWithBlynk = devicesWithAlerts.filter(device =>
-  //   device.alertsToSend.some(alert =>
-  //     alert.channels.some(item => item == "blynk")
-  //   )
-  // );
-  // devicesWithBlynk = devicesWithBlynk.map(device => ({
-  //   ...device,
-  //   alertsToSend: device.alertsToSend.filter(alert =>
-  //     alert.channels.some(item => item == "blynk")
-  //   )
-  // }));
-  // if (devicesWithBlynk.length > 0) {
-  //   sendBlynk(devicesWithBlynk);
-  // }
-};
-
-var transport = nodemailer.createTransport({
-  host: config.email.host,
-  port: config.email.port,
-  secure: true, // use SSL
-  auth: {
-    user: config.email.user,
-    pass: config.email.pass
+  let devicesWithBlynk = devicesWithAlerts.filter(device =>
+    device.alertsToSend.some(alert =>
+      alert.channels.some(item => item == "blynk")
+    )
+  );
+  devicesWithBlynk = devicesWithBlynk.map(device => ({
+    ...device,
+    alertsToSend: device.alertsToSend.filter(alert =>
+      alert.channels.some(item => item == "blynk")
+    )
+  }));
+  if (devicesWithBlynk.length > 0) {
+    sendBlynk(devicesWithBlynk);
   }
-});
+};
 
 var sendMail = devices => {
   let mailBody = "";
@@ -368,6 +344,50 @@ var composeMail = (subject, body) => {
   
   ${body}`
   };
+};
+
+var sendBlynk = devices => {
+  let messageBody = "";
+  devices.forEach(device => {
+    let deviceText = generateTEXTForDevice(device);
+    messageBody += deviceText;
+  });
+  let deviceNames = devices.map(device => device.deviceName);
+  let subject = `Alerts for ${deviceNames.join(", ")}`;
+
+  const message = `------------###############------------
+${subject}
+${messageBody}
+------------###############------------\n\n\n`;
+
+  blynk.notify("Alerts for devices !!");
+  terminal.write(message);
+};
+
+var generateTEXTForDevice = device => {
+  let alerts = device.alertsToSend.map(alert => {
+    let dataType = alert.dataType;
+    let rules = alert.rulesTriggered.map(rule => {
+      let ruleModified = getRuleModified(rule);
+      let op = ruleModified.operator.padStart(8);
+      let refValue = ruleModified.operatorValue.padStart(7);
+      let actValue = ruleModified.actualValue.padEnd(20);
+      return `${op} | ${refValue} | ${actValue}`;
+    });
+    return `${dataType}:
+${"op".padStart(8)} | ${"refVal".padStart(7)} | ${"actVal".padEnd(20)}
+${rules.join("\n")}
+---------------------------------------`;
+  });
+  let fullDate = helper.getDate(new Date().toISOString());
+  let date = fullDate.substring(0, 10);
+  let time = fullDate.substring(11, 19);
+  return `---------------------------------------
+date:   ${date} ${time}
+device: ${device.deviceName.toUpperCase()}
+---------------------------------------
+${alerts.join("\n")}
+`;
 };
 
 // ---------------------------------------------------------------

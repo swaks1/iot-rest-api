@@ -214,7 +214,7 @@ const addInitialAlert = async (deviceId, dataType) => {
       },
       {
         name: "blynk",
-        selected: false
+        selected: true
       }
     ]
   })
