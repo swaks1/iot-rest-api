@@ -6,10 +6,10 @@ const baseConfig = {
   env,
   isDev: env === "development",
   isTest: env === "testing",
-  port: process.env.port || 8000, // 3000,
+  port: process.env.port || 8000,
   logging: true,
   secrets: {
-    jwt: process.env.JWT_SECRET,
+    jwt: process.env.secrets_jwt,
     jwtExp: "100d"
   }
 };

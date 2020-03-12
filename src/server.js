@@ -33,6 +33,12 @@ app.use((err, req, res, next) => {
 });
 
 export const startServer = async () => {
+  logger.log(`
+  ==============///////////////=====================
+  Starting APP in ${process.env.NODE_ENV} mode.
+  =============///////////////====================
+  `);
+
   try {
     var dbConnection = await connectToDatabase();
     if (!dbConnection) throw new Error("Cannot connect to Database !!");
