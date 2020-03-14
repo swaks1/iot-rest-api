@@ -9,16 +9,16 @@ import schedule from "node-schedule";
 import nodemailer from "nodemailer";
 import BlynkLib from "blynk-library";
 
-// mail
-var transport = nodemailer.createTransport({
-  host: config.email.host,
-  port: config.email.port,
-  secure: true, // use SSL
-  auth: {
-    user: config.email.user,
-    pass: config.email.pass
-  }
-});
+// mail using google ? or other... works only locally for google
+// var transport = nodemailer.createTransport({
+//   host: config.email.host,
+//   port: config.email.port,
+//   secure: true, // use SSL
+//   auth: {
+//     user: config.email.user,
+//     pass: config.email.pass
+//   }
+// });
 
 var blynk = new BlynkLib.Blynk(config.blynkAccesskey);
 let terminal = new blynk.WidgetTerminal(2);
@@ -257,15 +257,20 @@ var sendMail = devices => {
   });
   let deviceNames = devices.map(device => device.deviceName);
   let subject = `Alerts for ${deviceNames.join(", ")}`;
+  let fullHTML = `
+  ${getStylesForHtml()} 
+  ${mailBody}`;
 
-  const message = composeMail(subject, mailBody);
-  transport.sendMail(message, function(err, info) {
-    if (err) {
-      logger.log(err);
-    } else {
-      logger.log(info);
-    }
-  });
+  blynk.email(config.email.to, subject, fullHTML);
+
+  // const message = composeMail(subject, fullHTML);
+  // transport.sendMail(message, function(err, info) {
+  //   if (err) {
+  //     logger.log(err);
+  //   } else {
+  //     logger.log(info);
+  //   }
+  // });
 };
 
 var generateHTMLForDevice = device => {
@@ -316,36 +321,37 @@ var composeMail = (subject, body) => {
     from: config.email.from, // Sender address (wont work.. gmail sends the source address)
     to: config.email.to,
     subject: subject,
-    html: `
-  <style>
-    #alertsTable {
-      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    #alertsTable td, #alertsTable th {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-    
-    #alertsTable tr:nth-child(even){background-color: #f2f2f2;}
-    
-    #alertsTable tr:hover {background-color: #ddd;}
-    
-    #alertsTable th {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: #4CAF50;
-      color: white;
-    }
-  </style>
-  
-  ${body}`
+    html: `${body}`
   };
 };
 
+var getStylesForHtml = () => {
+  return `
+  <style>
+  #alertsTable {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #alertsTable td, #alertsTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #alertsTable tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #alertsTable tr:hover {background-color: #ddd;}
+  
+  #alertsTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+  }
+</style>`;
+};
 var sendBlynk = devices => {
   let messageBody = "";
   devices.forEach(device => {
