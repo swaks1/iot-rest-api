@@ -88,9 +88,7 @@ controller.reloadDataTypes = async (req, res, next) => {
     return;
   }
 
-  let dataTypes = await Data.collection
-    .distinct("dataItem.dataType", { device: device._id })
-    .catch(err => next(err));
+  let dataTypes = await Data.collection.distinct("dataItem.dataType", { device: device._id }).catch(err => next(err));
 
   dataTypes = dataTypes.filter(item => item != "command"); // remove command from the dataTypes
   dataTypes.sort();

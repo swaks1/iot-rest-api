@@ -32,8 +32,9 @@ let terminal = new blynk.WidgetTerminal(2);
 // });
 
 export const startAlertScheduler = async () => {
-  // currently schedule time 1 minute.. check cron format
-  schedule.scheduleJob("*/1 * * * *", function() {
+  var minutes = config.alertsInterval || 1;
+  // currently schedule time 1 minute or value form config.. check cron format for more info
+  schedule.scheduleJob(`*/${minutes} * * * *`, function() {
     logger.log("Checking for alerts...");
     checkAllDevicesForAlertsAndSend();
   });
@@ -63,18 +64,13 @@ var handleDevice = async device => {
     let alerts = await Alert.find({ device: device._id })
       .lean()
       .exec();
-    let alertsFiltered = alerts.filter(alert =>
-      alert.rules.some(rule => rule.selected)
-    );
+    let alertsFiltered = alerts.filter(alert => alert.rules.some(rule => rule.selected));
     let dataTypes = alertsFiltered.map(alert => alert.dataType);
     let alertsToSend = [];
 
     for (let i = 0; i < dataTypes.length; i++) {
       let dataType = dataTypes[i];
-      var data = await Data.find({
-        device: device._id,
-        "dataItem.dataType": dataType
-      })
+      var data = await Data.find({ device: device._id, "dataItem.dataType": dataType })
         .sort({ created: -1 })
         .limit(1)
         .lean()
@@ -117,11 +113,7 @@ var checkAlert = async data => {
       }
     }
     if (rulesTriggered.length > 0) {
-      let alertHistoryItem = await addOrUpdateAlertHistoryItem(
-        data,
-        rulesTriggered,
-        alert
-      );
+      let alertHistoryItem = await addOrUpdateAlertHistoryItem(data, rulesTriggered, alert);
       return alertHistoryItem;
     }
   }
@@ -182,18 +174,14 @@ var addOrUpdateAlertHistoryItem = async (data, rulesTriggered, alert) => {
 
   if (alertHistoryItem) {
     rulesTriggered.forEach(ruleTriggered => {
-      let existing = alertHistoryItem.rulesTriggered.find(
-        item => item.operator == ruleTriggered.operator
-      );
+      let existing = alertHistoryItem.rulesTriggered.find(item => item.operator == ruleTriggered.operator);
       if (!existing) {
         alertHistoryItem.rulesTriggered.push(ruleTriggered);
         changed = true;
       }
     });
     if (changed) {
-      alertHistoryItem.channels = alert.channels
-        .filter(item => item.selected)
-        .map(item => item.name);
+      alertHistoryItem.channels = alert.channels.filter(item => item.selected).map(item => item.name);
       await alertHistoryItem.save();
     }
   } else {
@@ -202,9 +190,7 @@ var addOrUpdateAlertHistoryItem = async (data, rulesTriggered, alert) => {
       dataType: data.dataItem.dataType,
       data: data._id,
       rulesTriggered: rulesTriggered,
-      channels: alert.channels
-        .filter(item => item.selected)
-        .map(item => item.name)
+      channels: alert.channels.filter(item => item.selected).map(item => item.name)
     });
     changed = true;
   }
@@ -218,15 +204,11 @@ var addOrUpdateAlertHistoryItem = async (data, rulesTriggered, alert) => {
 var sendAlerts = async devicesWithAlerts => {
   // by mail
   let devicesWithMail = devicesWithAlerts.filter(device =>
-    device.alertsToSend.some(alert =>
-      alert.channels.some(item => item == "email")
-    )
+    device.alertsToSend.some(alert => alert.channels.some(item => item == "email"))
   );
   devicesWithMail = devicesWithMail.map(device => ({
     ...device,
-    alertsToSend: device.alertsToSend.filter(alert =>
-      alert.channels.some(item => item == "email")
-    )
+    alertsToSend: device.alertsToSend.filter(alert => alert.channels.some(item => item == "email"))
   }));
   if (devicesWithMail.length > 0) {
     sendMail(devicesWithMail);
@@ -234,15 +216,11 @@ var sendAlerts = async devicesWithAlerts => {
 
   // by blynk ?
   let devicesWithBlynk = devicesWithAlerts.filter(device =>
-    device.alertsToSend.some(alert =>
-      alert.channels.some(item => item == "blynk")
-    )
+    device.alertsToSend.some(alert => alert.channels.some(item => item == "blynk"))
   );
   devicesWithBlynk = devicesWithBlynk.map(device => ({
     ...device,
-    alertsToSend: device.alertsToSend.filter(alert =>
-      alert.channels.some(item => item == "blynk")
-    )
+    alertsToSend: device.alertsToSend.filter(alert => alert.channels.some(item => item == "blynk"))
   }));
   if (devicesWithBlynk.length > 0) {
     sendBlynk(devicesWithBlynk);

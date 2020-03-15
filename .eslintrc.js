@@ -14,13 +14,15 @@ module.exports = {
   ],
   plugins: ["prettier", "jest"],
   rules: {
-    "eqeqeq": "off",
+    eqeqeq: "off",
+    "no-unused-vars": "off",
     "promise/catch-or-return": "error",
     "prettier/prettier": [
       "error",
       {
         singleQuote: false,
-        semi: true
+        semi: true,
+        printWidth: 120
       }
     ]
   }

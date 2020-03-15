@@ -50,9 +50,7 @@ controller.post = async (req, res, next) => {
     let existingAlerts = await Alert.find({ device: deviceId }).exec();
     for (let i = 0; i < alerts.length; i++) {
       let alert = alerts[i];
-      var existingAlert = existingAlerts.find(
-        item => item.dataType == alert.dataType
-      );
+      var existingAlert = existingAlerts.find(item => item.dataType == alert.dataType);
       if (existingAlert) {
         existingAlert.rules = alert.rules;
         existingAlert.channels = alert.channels;

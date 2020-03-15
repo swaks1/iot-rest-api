@@ -17,5 +17,6 @@ export const config = {
     from: process.env.email_from,
     to: process.env.email_to
   },
-  blynkAccesskey: process.env.blynkAccesskey
+  blynkAccesskey: process.env.blynkAccesskey,
+  alertsInterval: process.env.alertsInterval
 };

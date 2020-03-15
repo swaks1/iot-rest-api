@@ -16,8 +16,6 @@ router
   .get(controller.getNotExecutedCommand)
   .post(controller.postExecutedCommand);
 
-router
-  .route("/GetGoogleCertificate/Thumbprint")
-  .get(controller.getGoogleApiCert);
+router.route("/GetGoogleCertificate/Thumbprint").get(controller.getGoogleApiCert);
 
 export default router;

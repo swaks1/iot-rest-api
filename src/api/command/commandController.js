@@ -119,9 +119,7 @@ controller.UpdateDeviceFromExecutedCommand = async command => {
         if (command.commandItem.commandType == "IS_ACTIVE") {
           if (command.commandItem.commandValue.toLowerCase() == "true") {
             device.isActive = true;
-          } else if (
-            command.commandItem.commandValue.toLowerCase() == "false"
-          ) {
+          } else if (command.commandItem.commandValue.toLowerCase() == "false") {
             device.isActive = false;
           }
         }
@@ -183,21 +181,14 @@ const saveLoraWANCommand = (command, res, next) => {
         .then(result => {
           let pseudoId = 1;
           let lastCommand = result.length > 0 ? result[0] : null;
-          if (
-            lastCommand &&
-            lastCommand.pseudoId &&
-            lastCommand.pseudoId < 255
-          ) {
+          if (lastCommand && lastCommand.pseudoId && lastCommand.pseudoId < 255) {
             pseudoId = lastCommand.pseudoId + 1;
           }
           command.channel = CHANNEL.LORAWAN;
           command.pseudoId = pseudoId;
 
           ttnDataAPI
-            .sendUplink(iotDevice.ttnInfo.devId, [
-              pseudoId,
-              command.commandItem.commandValue
-            ])
+            .sendUplink(iotDevice.ttnInfo.devId, [pseudoId, command.commandItem.commandValue])
             .then(() => {
               Command.create(command)
                 .then(item => {

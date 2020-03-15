@@ -91,9 +91,7 @@ controller.get = async (req, res, next) => {
               next(error);
             } else {
               var mappedData = data.map((item, index) => {
-                let obj = JSON.parse(
-                  JSON.stringify(item.average).replace("$", "")
-                ); // the average is object that canot be accesed....
+                let obj = JSON.parse(JSON.stringify(item.average).replace("$", "")); // the average is object that canot be accesed....
                 let average = obj.numberDecimal;
 
                 let year = currentYear;
@@ -123,9 +121,7 @@ controller.get = async (req, res, next) => {
                   month = "0" + month;
                 }
                 let created = `${currentYear}-${month}`;
-                let mappedItem = mappedData.find(
-                  item => item.created == created
-                );
+                let mappedItem = mappedData.find(item => item.created == created);
                 if (mappedItem) {
                   mappedItem._id = `data${index - 1}`;
                 } else {
@@ -191,9 +187,7 @@ controller.get = async (req, res, next) => {
               next(error);
             } else {
               var mappedData = data.map((item, index) => {
-                let obj = JSON.parse(
-                  JSON.stringify(item.average).replace("$", "")
-                ); // the average is object that canot be accesed....
+                let obj = JSON.parse(JSON.stringify(item.average).replace("$", "")); // the average is object that canot be accesed....
                 let average = obj.numberDecimal;
 
                 let year = item._id.year;
@@ -272,9 +266,7 @@ controller.get = async (req, res, next) => {
               next(error);
             } else {
               var mappedData = data.map((item, index) => {
-                let obj = JSON.parse(
-                  JSON.stringify(item.average).replace("$", "")
-                ); // the average is object that canot be accesed....
+                let obj = JSON.parse(JSON.stringify(item.average).replace("$", "")); // the average is object that canot be accesed....
                 let average = obj.numberDecimal;
 
                 let year = item._id.year;
@@ -296,9 +288,7 @@ controller.get = async (req, res, next) => {
                   minute = "0" + minute;
                 }
 
-                let localDate = helper.getDate(
-                  `${year}-${month}-${day}T${hour}:${minute}:00.000Z`
-                );
+                let localDate = helper.getDate(`${year}-${month}-${day}T${hour}:${minute}:00.000Z`);
                 // logger.log(localDate);
                 return {
                   dataItem: {
@@ -362,9 +352,7 @@ controller.get = async (req, res, next) => {
               next(error);
             } else {
               var mappedData = data.map((item, index) => {
-                let obj = JSON.parse(
-                  JSON.stringify(item.average).replace("$", "")
-                ); // the average is object that canot be accesed....
+                let obj = JSON.parse(JSON.stringify(item.average).replace("$", "")); // the average is object that canot be accesed....
                 let average = obj.numberDecimal;
 
                 let year = item._id.year;
@@ -383,9 +371,7 @@ controller.get = async (req, res, next) => {
                   hour = "0" + hour;
                 }
 
-                let localDate = helper.getDate(
-                  `${year}-${month}-${day}T${hour}:${minute}:00.000Z`
-                );
+                let localDate = helper.getDate(`${year}-${month}-${day}T${hour}:${minute}:00.000Z`);
                 // logger.log(localDate);
                 return {
                   dataItem: {

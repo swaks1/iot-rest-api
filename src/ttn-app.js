@@ -60,8 +60,7 @@ var saveData = async (devID, payload) => {
     let command = payload.payload_fields.command;
     try {
       if (data && data.length > 0) await Data.insertMany(data);
-      if (command && command > 0)
-        await updateCommandExecuted(command, existingDevice);
+      if (command && command > 0) await updateCommandExecuted(command, existingDevice);
     } catch (err) {
       logger.error(err);
     }
@@ -139,12 +138,7 @@ ttnApplicationMethods.deleteDevice = async devId => {
 
 var ttnDataMethods = {};
 
-ttnDataMethods.sendUplink = async (
-  devId,
-  hexDataArray,
-  port = 1,
-  confirmed = false
-) => {
+ttnDataMethods.sendUplink = async (devId, hexDataArray, port = 1, confirmed = false) => {
   dataClient.send(devId, Buffer.from(hexDataArray), port, confirmed);
 };
 
