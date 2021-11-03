@@ -33,7 +33,7 @@
     "node-schedule": "^1.3.2",
     "nodemailer": "^6.4.2",
     "ttn": "^2.3.3",
-    "validator": "^10.9.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
